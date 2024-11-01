@@ -69,6 +69,14 @@
     -fx-font-family: 'Monserrat', sans-serif;
 }
 
+.label-vinculo {  
+    -fx-font-family: "Arial"; /* Tipografía */  
+    -fx-font-size: 14px; /* Tamaño de la fuente */  
+    -fx-text-fill: #1D3B6F; /* Color del texto */  
+    -fx-font-weight: bold; /* Negrita */  
+    -fx-underline: true; /* Subrayado */  
+}
+
 /* Estilo para cajas de selección */  
 .choice-box, .combo-box {  
     -fx-background-color: #d3d3d3; /* Color de fondo */  
