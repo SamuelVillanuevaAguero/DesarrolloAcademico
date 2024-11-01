@@ -56,6 +56,22 @@
     -fx-background-color: #335185; /* Color al hover */  
 }  
 
+/* Estilo para botones azul */  
+.button-blanco {  
+    -fx-background-color: white; /* Color de fondo */  
+    -fx-text-fill: #2f477a; /* Color del texto */  
+    -fx-font-size: 12px; /* Tamaño de fuente */  
+    -fx-padding: 10px 18px; /* Padding interno */  
+    -fx-border-radius: 5px; /* Bordes redondeados */  
+    -fx-border-color: #2f477a;
+    -fx-background-radius: 5px; /* Bordes redondeados */  
+    -fx-cursor: hand; /* Cursor tipo mano */  
+}  
+
+.button-blanco:hover {  
+    -fx-background-color: #b5c7e7; /* Color al hover */  
+} 
+
 /* Estilo para etiquetas (labels) */  
 .label {  
     -fx-text-fill: #666666; /* Color del texto */  
@@ -66,6 +82,13 @@
     -fx-font-size: 48px;
     -fx-font-weight: bold;
     -fx-text-fill: #2f477a; /* Azul oscuro */
+    -fx-font-family: 'Monserrat', sans-serif;
+}
+
+.title-subtitulo {
+    -fx-font-size: 16px;
+    /*-fx-font-weight: bold;*/
+    -fx-text-fill: #000000; /* Azul oscuro */
     -fx-font-family: 'Monserrat', sans-serif;
 }
 
