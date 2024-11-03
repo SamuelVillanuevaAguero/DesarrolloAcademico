@@ -35,9 +35,9 @@
             </Label>
             <Label layoutX="61.0" layoutY="62.0" text="Programa de Capacitación" />
             <Label layoutX="60.0" layoutY="135.0" text="Elije un listado a importar: " />
-            <ComboBox fx:id="comboBoxListados" layoutX="244.0" layoutY="126.0" prefHeight="38.0" prefWidth="200.0" promptText="Selecciona una opción" />
+            <ComboBox fx:id="comboBoxListados" layoutX="244.0" layoutY="126.0" prefHeight="38.0" prefWidth="238.0" />
             <Label layoutX="61.0" layoutY="203.0" text="Elije un formato a importar:" />
-            <ComboBox fx:id="comboBoxFormatos" layoutX="244.0" layoutY="194.0" prefHeight="38.0" prefWidth="200.0" promptText="Selecciona una opción" />
+            <ComboBox fx:id="comboBoxFormatos" layoutX="244.0" layoutY="194.0" prefHeight="38.0" prefWidth="238.0" />
             <Button fx:id="botonPC" layoutX="519.0" layoutY="53.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" styleClass="button-blanco" text="Adjuntar Documento" />
             <Button fx:id="botonListado" layoutX="519.0" layoutY="126.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" styleClass="button-blanco" text="Adjuntar Documento" />
             <Button fx:id="botonFormato" layoutX="519.0" layoutY="194.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" styleClass="button-blanco" text="Adjuntar Documento" />
@@ -46,6 +46,6 @@
             <Label fx:id="labelFormato" layoutX="676.0" layoutY="203.0" />
          </children>
       </Pane>
-      <Button layoutX="814.0" layoutY="501.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" styleClass="button-azul" text="Guardar" />
+      <Button fx:id="botonGuardar" layoutX="779.0" layoutY="499.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" styleClass="button-azul" text="Guardar" />
    </children>
 </AnchorPane>
