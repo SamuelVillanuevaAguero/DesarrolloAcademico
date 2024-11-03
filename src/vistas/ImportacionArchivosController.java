@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,94 +70,109 @@ public class ImportacionArchivosController implements Initializable {
     }
 
     public void cargarProgramaCap(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().addAll(
+        FileChooser selectorArchivos = new FileChooser();
+        selectorArchivos.setTitle("Seleccionar archivo");
+        selectorArchivos.setInitialDirectory(new File(System.getProperty("user.home")));
+        selectorArchivos.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Todos los archivos", "*.pdf", "*.xlsx", "*.xls", "*.doc", "*.docx"),
                 new FileChooser.ExtensionFilter("PDF", "*.pdf"),
                 new FileChooser.ExtensionFilter("Excel", "*.xlsx", "*.xls"),
                 new FileChooser.ExtensionFilter("Word", "*.doc", "*.docx")
         );
 
-        programaCapacitacion = fileChooser.showOpenDialog(botonPC.getScene().getWindow());
+        programaCapacitacion = selectorArchivos.showOpenDialog(botonPC.getScene().getWindow());
         if (programaCapacitacion != null) {
             labelPC.setText(programaCapacitacion.getName());
-            // Aquí puedes procesar el archivo seleccionado  
         }
     }
 
     public void cargarListado(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().addAll(
+        FileChooser selectorArchivos = new FileChooser();
+        selectorArchivos.setTitle("Seleccionar archivo");
+        selectorArchivos.setInitialDirectory(new File(System.getProperty("user.home")));
+        selectorArchivos.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Todos los archivos", "*.pdf", "*.xlsx", "*.xls", "*.doc", "*.docx"),
                 new FileChooser.ExtensionFilter("PDF", "*.pdf"),
                 new FileChooser.ExtensionFilter("Excel", "*.xlsx", "*.xls"),
                 new FileChooser.ExtensionFilter("Word", "*.doc", "*.docx")
         );
 
-        listado = fileChooser.showOpenDialog(botonPC.getScene().getWindow());
+        listado = selectorArchivos.showOpenDialog(botonPC.getScene().getWindow());
         if (listado != null) {
             labelListado.setText(listado.getName());
-            // Aquí puedes procesar el archivo seleccionado  
         }
     }
 
     public void cargarFormato(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().addAll(
+        FileChooser selectorArchivos = new FileChooser();
+        selectorArchivos.setTitle("Seleccionar archivo");
+        selectorArchivos.setInitialDirectory(new File(System.getProperty("user.home")));
+        selectorArchivos.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Todos los archivos", "*.pdf", "*.xlsx", "*.xls", "*.doc", "*.docx"),
                 new FileChooser.ExtensionFilter("PDF", "*.pdf"),
                 new FileChooser.ExtensionFilter("Excel", "*.xlsx", "*.xls"),
                 new FileChooser.ExtensionFilter("Word", "*.doc", "*.docx")
         );
 
-        formato = fileChooser.showOpenDialog(botonPC.getScene().getWindow());
+        formato = selectorArchivos.showOpenDialog(botonPC.getScene().getWindow());
         if (formato != null) {
             labelFormato.setText(formato.getName());
-            // Aquí puedes procesar el archivo seleccionado  
         }
     }
 
     public void guardarArchivos(MouseEvent event) {
-        String userHome = System.getProperty("user.home");
-        String separator = File.separator;
+        String rutaBase = System.getProperty("user.home");
+        String separador = File.separator;
         List<String> archivosImportados = new ArrayList<>();
         boolean algunArchivoImportado = false;
 
         // Crear directorio principal en el escritorio
-        String mainDir = userHome + separator + "Desktop" + separator + "Gestion_de_Cursos";
-        File mainDirectory = new File(mainDir);
-        if (!mainDirectory.exists()) {
-            mainDirectory.mkdir();
+        String dirRaiz = rutaBase + separador + "Desktop" + separador + "Gestion_de_Cursos";
+        File directorioRaiz = new File(dirRaiz);
+        if (!directorioRaiz.exists()) {
+            directorioRaiz.mkdir();
         }
 
         // Crear directorio de archivos importados
-        String importedDir = mainDir + separator + "Archivos_importados";
-        File importedDirectory = new File(importedDir);
-        if (!importedDirectory.exists()) {
-            importedDirectory.mkdir();
+        String dirImport = dirRaiz + separador + "Archivos_importados";
+        File directorioImportados = new File(dirImport);
+        if (!directorioImportados.exists()) {
+            directorioImportados.mkdir();
+        }
+
+        // Determinar el período actual y crear el directorio correspondiente
+        Calendar calendario = Calendar.getInstance();
+        int yearActual = calendario.get(Calendar.YEAR);
+        int mesActual = calendario.get(Calendar.MONTH) + 1; // Calendar.MONTH va de 0-11
+
+        String periodo;
+        if (mesActual >= 1 && mesActual <= 7) {
+            periodo = "1-" + yearActual;
+        } else {
+            periodo = "2-" + yearActual;
+        }
+
+        String dirPeriodo = dirImport + separador + periodo;
+        File directorioPeriodo = new File(dirPeriodo);
+        if (!directorioPeriodo.exists()) {
+            directorioPeriodo.mkdir();
         }
 
         // Manejar Programa de Capacitación
         if (programaCapacitacion != null) {
-            String pcDir = importedDir + separator + "programas_de_capacitacion";
-            File pcDirectory = new File(pcDir);
-            if (!pcDirectory.exists()) {
-                pcDirectory.mkdir();
+            String pcDir = dirPeriodo + separador + "programas_de_capacitacion";
+            File pcDirectorio = new File(pcDir);
+            if (!pcDirectorio.exists()) {
+                pcDirectorio.mkdir();
             }
 
             // Encontrar el siguiente número de semana disponible
-            int weekNumber = 1;
-            String extension = getFileExtension(programaCapacitacion);
+            int numeroSemana = 1;
+            String extension = getExtensionArchivo(programaCapacitacion);
             File destFile;
             do {
-                destFile = new File(pcDir + separator + "programa_de_capacitacion_(Semana_" + weekNumber + ")" + extension);
-                weekNumber++;
+                destFile = new File(pcDir + separador + "programa_de_capacitacion_(Semana_" + numeroSemana + ")" + extension);
+                numeroSemana++;
             } while (destFile.exists());
 
             try {
@@ -172,26 +186,26 @@ public class ImportacionArchivosController implements Initializable {
 
         // Manejar Listados según selección del ComboBox
         if (listado != null && comboBoxListados.getValue() != null) {
-            String listadoType = comboBoxListados.getValue();
-            String folderName = convertirNombreCarpeta(listadoType);
-            String listadoDir = importedDir + separator + folderName;
-            File listadoDirectory = new File(listadoDir);
-            if (!listadoDirectory.exists()) {
-                listadoDirectory.mkdir();
+            String tipoListado = comboBoxListados.getValue();
+            String nombrecarpeta = convertirNombreCarpeta(tipoListado);
+            String listadoDir = dirPeriodo + separador + nombrecarpeta;
+            File listadoDirectorio = new File(listadoDir);
+            if (!listadoDirectorio.exists()) {
+                listadoDirectorio.mkdir();
             }
 
             // Encontrar el siguiente número de semana disponible
-            int weekNumber = 1;
-            String extension = getFileExtension(listado);
+            int numeroSemana = 1;
+            String extension = getExtensionArchivo(listado);
             File destFile;
             do {
-                destFile = new File(listadoDir + separator + "listado_(Semana_" + weekNumber + ")" + extension);
-                weekNumber++;
+                destFile = new File(listadoDir + separador + "listado_(Semana_" + numeroSemana + ")" + extension);
+                numeroSemana++;
             } while (destFile.exists());
 
             try {
                 java.nio.file.Files.copy(listado.toPath(), destFile.toPath());
-                archivosImportados.add(folderName);
+                archivosImportados.add(nombrecarpeta);
                 algunArchivoImportado = true;
             } catch (IOException e) {
                 mostrarError("Error al copiar el listado: " + e.getMessage());
@@ -200,26 +214,26 @@ public class ImportacionArchivosController implements Initializable {
 
         // Manejar Formatos según selección del ComboBox
         if (formato != null && comboBoxFormatos.getValue() != null) {
-            String formatoType = comboBoxFormatos.getValue();
-            String folderName = convertirNombreCarpeta(formatoType);
-            String formatoDir = importedDir + separator + folderName;
-            File formatoDirectory = new File(formatoDir);
-            if (!formatoDirectory.exists()) {
-                formatoDirectory.mkdir();
+            String tipoFormato = comboBoxFormatos.getValue();
+            String nombreCarpeta = convertirNombreCarpeta(tipoFormato);
+            String formatoDir = dirPeriodo + separador + nombreCarpeta;
+            File formatoDirectorio = new File(formatoDir);
+            if (!formatoDirectorio.exists()) {
+                formatoDirectorio.mkdir();
             }
 
             // Encontrar el siguiente número de semana disponible
-            int weekNumber = 1;
-            String extension = getFileExtension(formato);
+            int numeroSemana = 1;
+            String extension = getExtensionArchivo(formato);
             File destFile;
             do {
-                destFile = new File(formatoDir + separator + "formato_(Semana_" + weekNumber + ")" + extension);
-                weekNumber++;
+                destFile = new File(formatoDir + separador + "formato_(Semana_" + numeroSemana + ")" + extension);
+                numeroSemana++;
             } while (destFile.exists());
 
             try {
                 java.nio.file.Files.copy(formato.toPath(), destFile.toPath());
-                archivosImportados.add(folderName);
+                archivosImportados.add(nombreCarpeta);
                 algunArchivoImportado = true;
             } catch (IOException e) {
                 mostrarError("Error al copiar el formato: " + e.getMessage());
@@ -230,7 +244,8 @@ public class ImportacionArchivosController implements Initializable {
         if (algunArchivoImportado) {
             // Crear mensaje de éxito personalizado
             String mensaje = "Se importó correctamente el archivo en la(s) carpeta(s): "
-                    + String.join(",", archivosImportados);
+                    + String.join("\n", archivosImportados)
+                    + " del período " + periodo;
             mostrarMensajeExito(mensaje);
 
             // Limpiar los campos después de guardar
@@ -258,13 +273,13 @@ public class ImportacionArchivosController implements Initializable {
     }
 
 // Método auxiliar para obtener la extensión del archivo
-    private String getFileExtension(File file) {
-        String name = file.getName();
-        int lastIndexOf = name.lastIndexOf(".");
+    private String getExtensionArchivo(File archivo) {
+        String nombreArchivo = archivo.getName();
+        int lastIndexOf = nombreArchivo.lastIndexOf(".");
         if (lastIndexOf == -1) {
             return "";
         }
-        return name.substring(lastIndexOf);
+        return nombreArchivo.substring(lastIndexOf);
     }
 
 // Método auxiliar para convertir nombres de ComboBox a nombres de carpeta
