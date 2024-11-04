@@ -74,7 +74,8 @@
     -fx-font-size: 14px; /* Tamaño de la fuente */  
     -fx-text-fill: #1D3B6F; /* Color del texto */  
     -fx-font-weight: bold; /* Negrita */  
-    -fx-underline: true; /* Subrayado */  
+    -fx-underline: true; /* Subrayado */ 
+    -fx-cursor: hand;
 }
 
 /* Estilo para cajas de selección */  
