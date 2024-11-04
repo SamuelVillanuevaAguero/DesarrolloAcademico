@@ -19,7 +19,7 @@ import javafx.stage.StageStyle;
 public class AppArranque extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/vistas/InicioSesion.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/vistas/Principal.fxml"));
         Scene scene = new Scene(root);
         
         primaryStage.setScene(scene);

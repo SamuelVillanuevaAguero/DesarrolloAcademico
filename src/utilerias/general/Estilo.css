@@ -20,6 +20,8 @@
     -fx-cursor: hand; /* Cursor tipo mano */  
 }  
 
+
+
 .title-button:hover {  
     -fx-background-color: #1d3557; /* Color al hover */  
     -fx-border-radius: 5px; /* Bordes redondeados */  
@@ -60,6 +62,12 @@
 .label {  
     -fx-text-fill: #666666; /* Color del texto */  
     -fx-font-size: 14px; /* Tamaño de fuente */  
+}
+
+.label-principal {  
+    -fx-text-fill: #666666; /* Color del texto */  
+    -fx-font-size: 14px; /* Tamaño de fuente */  
+    -fx-font-weight: bold;
 }
 
 .title {
