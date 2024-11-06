@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="1012.0" stylesheets="@../utilerias/general/Estilo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vistas.ModificacionDatosController">
+<AnchorPane id="AnchorPane" fx:id="boton_cancelar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="1012.0" stylesheets="@../utilerias/general/Estilo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vistas.ModificacionDatosController">
    <children>
       <HBox prefHeight="6.0" prefWidth="1012.0" styleClass="hbox">
          <children>
@@ -15,5 +19,37 @@
             <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
          </children>
       </HBox>
+      <Button fx:id="botonGuardar" layoutX="477.0" layoutY="467.0" mnemonicParsing="false" styleClass="button-azul" text="Guardar" />
+      <Button fx:id="botonCancelar" layoutX="25.0" layoutY="517.0" mnemonicParsing="false" style="-fx-background-color: grey;" styleClass="button-gris" text="Cancelar" />
+      <Button fx:id="botonLimpiar" layoutX="316.0" layoutY="467.0" mnemonicParsing="false" styleClass="button-gris" text="Limpiar" />
+      <Label layoutX="90.0" layoutY="253.0" text="Director:" />
+      <Label layoutX="557.0" layoutY="253.0" text="Coordinador:" />
+      <Label layoutX="90.0" layoutY="348.0" text="Jefe del Departamento de Desarrollo Academico:" />
+      <Label layoutX="557.0" layoutY="348.0" text="Total de Docentes Adscritos:" />
+      <TextField fx:id="directorField" layoutX="90.0" layoutY="274.0" styleClass="text-field" />
+      <TextField fx:id="coordinadorField" layoutX="557.0" layoutY="281.0" />
+      <TextField fx:id="jefeDeptoField" layoutX="90.0" layoutY="377.0" />
+      <Label layoutX="263.0" layoutY="139.0" prefHeight="102.0" prefWidth="454.0" style="-fx-font-size: 40; -fx-text-fill: #092d91;" styleClass="title" text="Modificacion de datos" textFill="#092d91" />
+      <ImageView fitHeight="102.0" fitWidth="101.0" layoutX="790.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../utilerias/modificacion/logoITZ.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="57.0" fitWidth="176.0" layoutX="41.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../utilerias/modificacion/logoGobierno.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="266.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../utilerias/modificacion/logoEducacion.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="525.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../utilerias/modificacion/logoTECNM.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="totalDocentesField" layoutX="557.0" layoutY="377.0" />
    </children>
 </AnchorPane>
