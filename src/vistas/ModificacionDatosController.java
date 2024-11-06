@@ -98,8 +98,7 @@ public void cerrarVentana(MouseEvent event) {
         
         
     }
-    
-    // private static final String FILE_PATH = "C:\\Users\\TUF\\Documents\\NetBeansProjects\\DesarrolloAcademico\\DatosEjemplo.xlsx"; // Cambia esto por la ruta real de tu archivo Excel
+private static final String FILE_PATH = "C:\\Users\\TUF\\Documents\\NetBeansProjects\\DesarrolloAcademico\\DatosEjemplo.xlsx"; // Cambia esto por la ruta real de tu archivo Excel
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -117,12 +116,66 @@ public void cerrarVentana(MouseEvent event) {
             }
         });
         botonLimpiar.setOnMouseClicked(event -> limpiarCampos());
-        // botonGuardar.setOnMouseClicked(event -> guardarDatos());
+        botonGuardar.setOnMouseClicked(event -> guardarDatos());
 
         // Configura el evento del botón "Cancelar" para que cierre la ventana
         botonCancelar.setOnMouseClicked(event ->cancelarVentana(event));
-       // cargarDatosDesdeExcel();
+        cargarDatosDesdeExcel();
     }
 
-}
+    public void cargarDatosDesdeExcel() {
+        
+        try (FileInputStream fis = new FileInputStream(new File(FILE_PATH));
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Row row = sheet.getRow(0);
 
+            if (row != null) {
+                directorField.setText(row.getCell(0).getStringCellValue());
+                coordinadorField.setText(row.getCell(1).getStringCellValue());
+                jefeDeptoField.setText(row.getCell(2).getStringCellValue());
+                totalDocentesField.setText(String.valueOf((int) row.getCell(3).getNumericCellValue()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void guardarDatosEnExcel() {
+        try (FileInputStream fis = new FileInputStream(new File(FILE_PATH));
+             Workbook workbook = new XSSFWorkbook(fis);
+             FileOutputStream fos = new FileOutputStream(new File(FILE_PATH))) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Row row = sheet.getRow(0);
+
+            if (row == null) {
+                row = sheet.createRow(0);
+            }
+
+            row.createCell(0).setCellValue(directorField.getText());
+            row.createCell(1).setCellValue(coordinadorField.getText());
+            row.createCell(2).setCellValue(jefeDeptoField.getText());
+            row.createCell(3).setCellValue(Integer.parseInt(totalDocentesField.getText()));
+
+            workbook.write(fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void guardarDatos() {
+        String director = directorField.getText();
+        String coordinador = coordinadorField.getText();
+        String jefeDepto = jefeDeptoField.getText();
+        String totalDocentes = totalDocentesField.getText();
+
+        guardarDatosEnExcel();
+
+        // Aquí agrega la lógica para guardar los datos
+        System.out.println("Datos guardados: ");
+        System.out.println("Director: " + director);
+        System.out.println("Coordinador: " + coordinador);
+        System.out.println("Jefe de Departamento: " + jefeDepto);
+        System.out.println("Total de Docentes: " + totalDocentes);
+    }
+}
