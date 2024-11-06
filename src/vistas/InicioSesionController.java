@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.image.ImageView;
 import utilerias.general.ControladorGeneral;
 
 /**
@@ -26,7 +27,17 @@ public class InicioSesionController implements Initializable {
     private Button botonCerrar;
     @FXML
     private Button botonMinimizar;
-    
+    @FXML
+    private Button botonIniciarSesion;
+    @FXML
+    private TextField IngresaUsuario;
+    @FXML
+    private PasswordField IngresaContraseña;
+    @FXML
+    private TextField abajocontraseña;
+    @FXML
+    private ImageView botonVerContraseña;
+
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana() {
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
@@ -38,8 +49,8 @@ public class InicioSesionController implements Initializable {
             System.exit(0);
         }
     }
-    
-    public void minimizarVentana(MouseEvent event){
+
+    public void minimizarVentana(MouseEvent event) {
         ControladorGeneral.minimizarVentana(event);
     }
 
@@ -49,9 +60,24 @@ public class InicioSesionController implements Initializable {
         botonCerrar.setOnMouseClicked(event -> {
             cerrarVentana();
         });
-        
+
         botonMinimizar.setOnMouseClicked(event -> {
             minimizarVentana(event);
         });
+
+        // Configura el botón para mostrar la contraseña al presionar
+        botonVerContraseña.setOnMousePressed(event -> {
+            IngresaContraseña.setVisible(false);                    // Oculta el campo de contraseña
+            abajocontraseña.setText(IngresaContraseña.getText());   // Copia el texto de la contraseña
+            abajocontraseña.setVisible(true);                       // Muestra el campo de texto
+        });
+
+        // Configura el botón para ocultar la contraseña al soltar
+        botonVerContraseña.setOnMouseReleased(event -> {
+            IngresaContraseña.setVisible(true);   // Muestra el campo de contraseña
+            abajocontraseña.setVisible(false);    // Oculta el campo de texto visible
+        });
+
     }
+
 }

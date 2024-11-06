@@ -62,6 +62,15 @@
     -fx-font-size: 14px; /* Tamaño de fuente */  
 }
 
+.label-vinculo {  
+    -fx-font-family: "Arial"; /* Tipografía */  
+    -fx-font-size: 14px; /* Tamaño de la fuente */  
+    -fx-text-fill: #1D3B6F; /* Color del texto */  
+    -fx-font-weight: bold; /* Negrita */  
+    -fx-underline: true; /* Subrayado */ 
+    -fx-cursor: HAND;
+}
+
 .title {
     -fx-font-size: 48px;
     -fx-font-weight: bold;
@@ -96,6 +105,35 @@
 .text-field:hover {  
     -fx-background-color: #dcdcdc; /* Color al hover */  
 }  
+
+/* Estilo específico para el campo de usuario */
+.username-field {
+    -fx-background-color: white;
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 40 10 40; /* Espaciado para iconos */
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #9099a3;
+    -fx-text-fill: #333333;
+}
+
+/* Estilo específico para el campo de contraseña */
+.password-field {
+    -fx-background-color: white;
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 40 10 40;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #9099a3;
+    -fx-text-fill: #333333;
+}
+
+/* Estilo al enfocar (focus) el campo */
+.username-field:focused, .password-field:focused {
+    -fx-border-color: #6c63ff;
+}
 
 /********************************************* TABLA *******************************/
 /* Estilo para las tablas */
