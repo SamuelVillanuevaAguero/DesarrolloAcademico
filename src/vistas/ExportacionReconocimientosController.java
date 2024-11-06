@@ -9,9 +9,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import utilerias.general.ControladorGeneral;
 
@@ -31,6 +33,31 @@ public class ExportacionReconocimientosController implements Initializable {
     private Button botonMinimizar;
     @FXML
     private Button botonRegresar;
+    @FXML
+    private Button botonBuscar;
+    @FXML
+    private Button botonModificar;
+    @FXML
+    private Button botonGuardar;
+    @FXML
+    private RadioButton radiobutonsi;
+    @FXML
+    private RadioButton radiobutonno;
+    @FXML
+    private TextField txtfolio;
+    @FXML
+    private TextField txtcodigodelcurso;
+    @FXML
+    private TextField txtNombreCurso;
+    @FXML
+    private TextField txtNombreInstructor;
+    @FXML
+    private TextField txtCompetencias;
+    @FXML
+    private TextField txtFechaCurso;
+    @FXML
+    private ComboBox<?> txtSemanas;
+
     
     
     //Métodos de los botones de la barra superior :)
@@ -45,10 +72,13 @@ public class ExportacionReconocimientosController implements Initializable {
     public void regresarVentana(MouseEvent event)throws IOException{
         ControladorGeneral.regresar(event, "Principal", getClass());
     }
+    
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
+       // TODO
         
         botonCerrar.setOnMouseClicked(event -> {
             try {
@@ -69,6 +99,109 @@ public class ExportacionReconocimientosController implements Initializable {
                 Logger.getLogger(BusquedaEstadisticaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        
+        // Inicializar el campo txtfolio como deshabilitado y oculto
+        txtfolio.setVisible(false);
+        txtfolio.setDisable(true);
+        
+        // Configurar eventos para los RadioButtons
+        radiobutonsi.setOnAction(this::clicksi);
+        radiobutonno.setOnAction(this::clicno);
+
     }
-    
+
+    @FXML
+    private void buscarCurso(ActionEvent event) {
+        String folio = txtfolio.getText().trim();
+    String codigoCurso = txtcodigodelcurso.getText().trim();
+
+    // Verifica si se ha ingresado un folio o un código del curso
+    if (radiobutonsi.isSelected() && !folio.isEmpty()) {
+        // Lógica de búsqueda basada en el folio
+        txtcodigodelcurso.setText("JAVA2024");  
+        txtNombreCurso.setText("Curso de Java Avanzado"); // Mostrar el nombre del curso
+        txtFechaCurso.setText("01/01/2024");
+        txtNombreInstructor.setText("Juan Pérez");
+        txtCompetencias.setText("Programación avanzada en Java");
+        System.out.println("Datos encontrados y mostrados en la interfaz usando el folio.");
+    } else if (radiobutonno.isSelected() && !codigoCurso.isEmpty()) {
+        // Lógica de búsqueda basada en el código del curso
+        txtNombreCurso.setText("Curso de Java Avanzado"); // Mostrar el nombre del curso
+        txtFechaCurso.setText("01/01/2024");
+        txtNombreInstructor.setText("Juan Pérez");
+        txtCompetencias.setText("Programación avanzada en Java");
+        System.out.println("Datos encontrados y mostrados en la interfaz usando el código del curso.");
+    } else {
+        // Mensaje si no se ingresa un valor
+        System.out.println("Ingrese un folio o código del curso para buscar.");
+    }
+    }
+
+    @FXML
+    private void modificarDatos(ActionEvent event) {
+        txtFechaCurso.setDisable(false);     // Habilitar campo para edición    
+        txtNombreInstructor.setDisable(false); // Habilitar campo para edición
+        txtCompetencias.setDisable(false);   // Habilitar campo para edición
+        
+         // Mantener deshabilitados los campos no editables
+    txtNombreCurso.setDisable(true);
+    txtcodigodelcurso.setDisable(true);
+    }
+
+    @FXML
+    private void exportarReconocimientos(ActionEvent event) {
+    }
+
+    @FXML
+    private void guardarDatos(ActionEvent event) {
+         // Crear una alerta de confirmación
+    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+    confirmacion.setTitle("Confirmación de guardado");
+    confirmacion.setHeaderText("¿Está seguro de guardar los cambios?");
+
+    // Mostrar la alerta y esperar a que el usuario responda
+    confirmacion.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.OK) {
+            // Guardar cambios (simulación)
+            System.out.println("Cambios guardados exitosamente.");
+            
+            // Crear alerta de éxito
+            Alert exito = new Alert(AlertType.INFORMATION);
+            exito.setTitle("Éxito");
+            exito.setHeaderText(null);
+            exito.setContentText("Los cambios se guardaron con éxito.");
+            exito.showAndWait();
+
+            // Deshabilitar nuevamente los campos
+            txtFechaCurso.setDisable(true);
+            txtNombreInstructor.setDisable(true);
+            txtCompetencias.setDisable(true);
+        } else {
+            System.out.println("Guardado cancelado.");
+        }
+    });
+    }
+
+    @FXML
+    private void clicksi(ActionEvent event) {
+        if (radiobutonsi.isSelected()) {
+            txtfolio.setVisible(true); //Mostrar campo
+            txtfolio.setDisable(false);   // Habilitar el campo txtfolio para escritura
+            txtcodigodelcurso.setDisable(true); // Deshabilitar el campo txtcodigodelcurso
+            txtcodigodelcurso.clear();          // Limpiar el campo txtcodigodelcurso
+        }
+    }
+
+    @FXML
+    private void clicno(ActionEvent event) {
+        if (radiobutonno.isSelected()) {
+            txtfolio.setDisable(true);          // Deshabilitar el campo txtfolio
+            txtfolio.clear();                   // Limpiar el campo txtfolio
+            txtcodigodelcurso.setDisable(false); // Habilitar el campo txtcodigodelcurso para escritura
+        }
+    }
+
+    @FXML
+    private void escribirfolio(ActionEvent event) {
+    }
 }
