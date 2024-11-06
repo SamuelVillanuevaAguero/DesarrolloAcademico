@@ -1,21 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
+
 package vistas;
 
 import java.io.File;
+import static java.io.File.separator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.ResourceBundle;
 import java.util.logging.*;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.fxml.*;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
+import javafx.scene.input.*;
+import javafx.stage.*;
 import utilerias.general.ControladorGeneral;
 
 /**
@@ -120,65 +116,127 @@ public class ImportacionArchivosController implements Initializable {
         }
     }
 
-    public void guardarArchivos(MouseEvent event) {
-        String rutaBase = System.getProperty("user.home");
+    private void inicializarEstructuraDirectorios() {
+        String directorioUsuario = System.getProperty("user.home");
+        String separador = File.separator;
+        String directorioBase = directorioUsuario + separador + "Desktop" + separador + "Gestion_de_Cursos";
+        
+        // Obtener año actual
+        Calendar calendario = Calendar.getInstance();
+        int year = calendario.get(Calendar.YEAR);
+        int mesActual = calendario.get(Calendar.MONTH) + 1;
+        
+        // Definir la estructura de directorios
+        Map<String, List<String>> estructura = new HashMap<>();
+        
+        // Estructura para Archivos_exportados
+        List<String> subDirExportados = Arrays.asList(
+            "listas_asistencia",
+            "reconocimientos",
+            "reportes_estadisticos"
+        );
+        
+        // Estructura para Archivos_importados
+        List<String> subDirImportados = Arrays.asList(
+            "formato_de_hojas_de_reportes_estadisticos_docentes",
+            "formato_de_hojas_membretadas_para_reconocimientos",
+            "formato_de_lista_de_asistencias",
+            "formato_de_reporte_para_docentes_con_necesidad_de_capacitacion",
+            "listado_de_cursos_de_capacitacion_a_impartir_con_folio",
+            "listado_de_inscritos_a_cursos_de_capacitacion",
+            "listado_de_necesidad_de_capacitacion",
+            "programas_de_capacitacion"
+        );
+        
+        // Estructura para Otros
+        List<String> subDirOtros = Arrays.asList(
+            "condensados_vista_de_visualizacion_de_datos",
+            "informacion_modificable",
+            "registros_contraseñas"
+        );
+
+        // Crear directorio base
+        crearDirectorio(directorioBase);
+
+        // Crear estructura principal
+        String[] directoriosPrincipales = {"Archivos_exportados", "Archivos_importados", "Otros"};
+        for (String dirPrincipal : directoriosPrincipales) {
+            String rutaPrincipal = directorioBase + separador + dirPrincipal;
+            crearDirectorio(rutaPrincipal);
+
+            if (dirPrincipal.equals("Otros")) {
+                // Crear subdirectorios de Otros
+                for (String subDir : subDirOtros) {
+                    crearDirectorio(rutaPrincipal + separador + subDir);
+                }
+            } else {
+                // Crear estructura de año actual
+                String rutaYear = rutaPrincipal + separador + year;
+                crearDirectorio(rutaYear);
+
+                // Crear directorios de períodos
+                String[] periodos = {"1-" + year, "2-" + year};
+                for (String periodo : periodos) {
+                    String rutaPeriodo = rutaYear + separador + periodo;
+                    crearDirectorio(rutaPeriodo);
+
+                    // Crear subdirectorios correspondientes
+                    List<String> subDirs = dirPrincipal.equals("Archivos_exportados") ? 
+                                         subDirExportados : subDirImportados;
+                    for (String subDir : subDirs) {
+                        crearDirectorio(rutaPeriodo + separador + subDir);
+                    }
+                }
+            }
+        }
+    }
+
+    private void crearDirectorio(String ruta) {
+        File directorio = new File(ruta);
+        if (!directorio.exists()) {
+            directorio.mkdirs();
+        }
+    }
+
+    public void guardarArchivos(MouseEvent evento) {
+        String directorioUsuario = System.getProperty("user.home");
         String separador = File.separator;
         List<String> archivosImportados = new ArrayList<>();
-        boolean algunArchivoImportado = false;
+        boolean archivoImportadoExitoso = false;
 
-        // Crear directorio principal en el escritorio
-        String dirRaiz = rutaBase + separador + "Desktop" + separador + "Gestion_de_Cursos";
-        File directorioRaiz = new File(dirRaiz);
-        if (!directorioRaiz.exists()) {
-            directorioRaiz.mkdir();
-        }
-
-        // Crear directorio de archivos importados
-        String dirImport = dirRaiz + separador + "Archivos_importados";
-        File directorioImportados = new File(dirImport);
-        if (!directorioImportados.exists()) {
-            directorioImportados.mkdir();
-        }
-
-        // Determinar el período actual y crear el directorio correspondiente
+        // Determinar el período actual
         Calendar calendario = Calendar.getInstance();
-        int yearActual = calendario.get(Calendar.YEAR);
-        int mesActual = calendario.get(Calendar.MONTH) + 1; // Calendar.MONTH va de 0-11
+        int year = calendario.get(Calendar.YEAR);
+        int mesActual = calendario.get(Calendar.MONTH) + 1;
+        
+        String carpetaPeriodo = (mesActual >= 1 && mesActual <= 7) ? 
+                               "1-" + year : 
+                               "2-" + year;
 
-        String periodo;
-        if (mesActual >= 1 && mesActual <= 7) {
-            periodo = "1-" + yearActual;
-        } else {
-            periodo = "2-" + yearActual;
-        }
-
-        String dirPeriodo = dirImport + separador + periodo;
-        File directorioPeriodo = new File(dirPeriodo);
-        if (!directorioPeriodo.exists()) {
-            directorioPeriodo.mkdir();
-        }
+        // Ruta base para archivos importados
+        String directorioBase = directorioUsuario + separador + "Desktop" + separador + "Gestion_de_Cursos";
+        String directorioImportados = directorioBase + separador + "Archivos_importados" + 
+                                    separador + year + separador + carpetaPeriodo;
 
         // Manejar Programa de Capacitación
         if (programaCapacitacion != null) {
-            String pcDir = dirPeriodo + separador + "programas_de_capacitacion";
-            File pcDirectorio = new File(pcDir);
-            if (!pcDirectorio.exists()) {
-                pcDirectorio.mkdir();
-            }
-
+            String dirPC = directorioImportados + separator + "programas_de_capacitacion";
+            File directorioPC = new File(dirPC);
+            
             // Encontrar el siguiente número de semana disponible
             int numeroSemana = 1;
             String extension = getExtensionArchivo(programaCapacitacion);
-            File destFile;
+            File archivoDestino;
             do {
-                destFile = new File(pcDir + separador + "programa_de_capacitacion_(Semana_" + numeroSemana + ")" + extension);
+                archivoDestino = new File(dirPC + separador + "programa_de_capacitacion_(Semana_" + 
+                                        numeroSemana + ")" + extension);
                 numeroSemana++;
-            } while (destFile.exists());
+            } while (archivoDestino.exists());
 
             try {
-                java.nio.file.Files.copy(programaCapacitacion.toPath(), destFile.toPath());
+                java.nio.file.Files.copy(programaCapacitacion.toPath(), archivoDestino.toPath());
                 archivosImportados.add("programas_de_capacitacion");
-                algunArchivoImportado = true;
+                archivoImportadoExitoso = true;
             } catch (IOException e) {
                 mostrarError("Error al copiar el programa de capacitación: " + e.getMessage());
             }
@@ -187,26 +245,22 @@ public class ImportacionArchivosController implements Initializable {
         // Manejar Listados según selección del ComboBox
         if (listado != null && comboBoxListados.getValue() != null) {
             String tipoListado = comboBoxListados.getValue();
-            String nombrecarpeta = convertirNombreCarpeta(tipoListado);
-            String listadoDir = dirPeriodo + separador + nombrecarpeta;
-            File listadoDirectorio = new File(listadoDir);
-            if (!listadoDirectorio.exists()) {
-                listadoDirectorio.mkdir();
-            }
-
-            // Encontrar el siguiente número de semana disponible
+            String nombreCarpeta = convertirNombreCarpeta(tipoListado);
+            String dirListado = directorioImportados + separador + nombreCarpeta;
+            
             int numeroSemana = 1;
             String extension = getExtensionArchivo(listado);
-            File destFile;
+            File archivoDestino;
             do {
-                destFile = new File(listadoDir + separador + "listado_(Semana_" + numeroSemana + ")" + extension);
+                archivoDestino = new File(dirListado + separador + "listado_(Semana_" + 
+                                        numeroSemana + ")" + extension);
                 numeroSemana++;
-            } while (destFile.exists());
+            } while (archivoDestino.exists());
 
             try {
-                java.nio.file.Files.copy(listado.toPath(), destFile.toPath());
-                archivosImportados.add(nombrecarpeta);
-                algunArchivoImportado = true;
+                java.nio.file.Files.copy(listado.toPath(), archivoDestino.toPath());
+                archivosImportados.add(nombreCarpeta);
+                archivoImportadoExitoso = true;
             } catch (IOException e) {
                 mostrarError("Error al copiar el listado: " + e.getMessage());
             }
@@ -216,39 +270,31 @@ public class ImportacionArchivosController implements Initializable {
         if (formato != null && comboBoxFormatos.getValue() != null) {
             String tipoFormato = comboBoxFormatos.getValue();
             String nombreCarpeta = convertirNombreCarpeta(tipoFormato);
-            String formatoDir = dirPeriodo + separador + nombreCarpeta;
-            File formatoDirectorio = new File(formatoDir);
-            if (!formatoDirectorio.exists()) {
-                formatoDirectorio.mkdir();
-            }
-
-            // Encontrar el siguiente número de semana disponible
+            String dirFormato = directorioImportados + separador + nombreCarpeta;
+            
             int numeroSemana = 1;
             String extension = getExtensionArchivo(formato);
-            File destFile;
+            File archivoDestino;
             do {
-                destFile = new File(formatoDir + separador + "formato_(Semana_" + numeroSemana + ")" + extension);
+                archivoDestino = new File(dirFormato + separador + "formato_(Version_" + 
+                                        numeroSemana + ")" + extension);
                 numeroSemana++;
-            } while (destFile.exists());
+            } while (archivoDestino.exists());
 
             try {
-                java.nio.file.Files.copy(formato.toPath(), destFile.toPath());
+                java.nio.file.Files.copy(formato.toPath(), archivoDestino.toPath());
                 archivosImportados.add(nombreCarpeta);
-                algunArchivoImportado = true;
+                archivoImportadoExitoso = true;
             } catch (IOException e) {
                 mostrarError("Error al copiar el formato: " + e.getMessage());
             }
         }
 
-        // Verificar si se importó algún archivo
-        if (algunArchivoImportado) {
-            // Crear mensaje de éxito personalizado
-            String mensaje = "Se importó correctamente el archivo en la(s) carpeta(s): "
-                    + String.join("\n", archivosImportados)
-                    + " del período " + periodo;
+        if (archivoImportadoExitoso) {
+            String mensaje = "Se importó correctamente el archivo en la(s) carpeta(s): " +
+                           String.join(", ", archivosImportados) +
+                           " del período " + carpetaPeriodo;
             mostrarMensajeExito(mensaje);
-
-            // Limpiar los campos después de guardar
             limpiarCampos();
         } else {
             mostrarError("No se ha seleccionado ningún archivo para importar");
@@ -314,7 +360,8 @@ public class ImportacionArchivosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
+        inicializarEstructuraDirectorios();
 
         botonCerrar.setOnMouseClicked(event -> {
             try {
