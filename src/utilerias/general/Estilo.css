@@ -66,7 +66,7 @@
 
 .label-principal {  
     -fx-text-fill: #666666; /* Color del texto */  
-    -fx-font-size: 14px; /* Tamaño de fuente */  
+    -fx-font-size: 10px; /* Tamaño de fuente */  
     -fx-font-weight: bold;
 }
 

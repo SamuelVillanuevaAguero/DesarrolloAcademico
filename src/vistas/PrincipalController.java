@@ -38,7 +38,23 @@ public class PrincipalController implements Initializable {
     //Botones que redireccionan
     @FXML
     private Pane botonImportacion;
-
+    
+    @FXML
+    private Pane botonVisualizacion;
+    
+    @FXML
+    private Pane botonBusqueda;
+    
+    @FXML
+    private Pane botonModificacion;
+    
+    @FXML
+    private Pane botonExportacion;
+    
+    @FXML
+    private Pane botonRespaldo;
+    
+    
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) throws IOException{
         ControladorGeneral.cerrarVentana(event, "¿Quieres cerrar sesión?", getClass());
@@ -48,16 +64,8 @@ public class PrincipalController implements Initializable {
         ControladorGeneral.minimizarVentana(event);
     }
     
-    public void redireccionar(String nombreVista, MouseEvent event) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/" + nombreVista + ".fxml"));
-        Parent root = loader.load();
-
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -74,14 +82,57 @@ public class PrincipalController implements Initializable {
             minimizarVentana(event);
         });
         
-        
+        // VISTA UNO ()
         botonImportacion.setOnMouseClicked(event -> {
             try {
-                redireccionar("ImportacionArchivos", event);
+                ControladorGeneral.regresar(event,"ImportacionArchivos", getClass());
             } catch (IOException ex) {
                 Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-    }  
+        // VISTA DOS
+        botonVisualizacion.setOnMouseClicked(event -> {
+            try {
+                ControladorGeneral.regresar(event, "VizualizacionDatos", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        //VISTA TRES
+        botonBusqueda.setOnMouseClicked(event ->{
+            try {
+                ControladorGeneral.regresar(event, "BusquedaEstadistica", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        //VISTA CUATRO
+        botonModificacion.setOnMouseClicked(event ->{
+            try {
+                ControladorGeneral.regresar(event, "ModificacionDatos", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        //VISTA CINCO
+        botonExportacion.setOnMouseClicked(event -> {
+            try {
+                ControladorGeneral.regresar(event, "ExportacionReconocimientos", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+       
+        //VISTA SEIS
+        botonRespaldo.setOnMouseClicked(event ->{
+            try {
+                ControladorGeneral.regresar(event, "Respaldo", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }   
     
 }
