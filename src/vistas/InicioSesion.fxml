@@ -14,6 +14,11 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="1012.0" stylesheets="@../utilerias/general/Estilo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vistas.InicioSesionController">
    <children>
+      <ImageView fitHeight="599.0" fitWidth="526.0" layoutY="-19.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../utilerias/inicioSesion/logoTecno.png" />
+         </image>
+      </ImageView>
       <HBox prefHeight="12.0" prefWidth="1012.0" styleClass="hbox">
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
@@ -21,11 +26,6 @@
             <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
          </children>
       </HBox>
-      <ImageView fitHeight="599.0" fitWidth="526.0" layoutY="-19.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../utilerias/inicioSesion/logoTecno.png" />
-         </image>
-      </ImageView>
       <Label layoutX="526.0" layoutY="53.0" prefHeight="98.0" prefWidth="416.0" style="-fx-font-size: 20;" styleClass="title" text="Sistema de Gestión de Cursos para el Departamento de Desarrollo Académico de TecNM / IT Zacatepec" textAlignment="CENTER" wrapText="true" />
       <Pane layoutX="551.0" layoutY="165.0" prefHeight="387.0" prefWidth="367.0" styleClass="card-info">
          <children>

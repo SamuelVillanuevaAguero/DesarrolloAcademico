@@ -12,6 +12,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.image.ImageView;
 import utilerias.general.ControladorGeneral;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * FXML Controller class
@@ -64,7 +67,8 @@ public class InicioSesionController implements Initializable {
         botonMinimizar.setOnMouseClicked(event -> {
             minimizarVentana(event);
         });
-
+        
+        //Método para ver contraseña 
         // Configura el botón para mostrar la contraseña al presionar
         botonVerContraseña.setOnMousePressed(event -> {
             IngresaContraseña.setVisible(false);                    // Oculta el campo de contraseña
@@ -76,6 +80,15 @@ public class InicioSesionController implements Initializable {
         botonVerContraseña.setOnMouseReleased(event -> {
             IngresaContraseña.setVisible(true);   // Muestra el campo de contraseña
             abajocontraseña.setVisible(false);    // Oculta el campo de texto visible
+        });
+        
+        // Método para redireccionar a la vista Principal
+        botonIniciarSesion.setOnMouseClicked(event -> {
+            try {
+                ControladorGeneral.regresar(event, "Principal", getClass());
+            } catch (IOException ex) {
+                Logger.getLogger(PrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
 
     }
