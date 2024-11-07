@@ -39,8 +39,7 @@ public class ModificacionDatosController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    @FXML
-    private Button botonCerrar;
+    
     @FXML
     private Button botonMinimizar;
     @FXML
@@ -215,9 +214,7 @@ public void cerrarVentana(MouseEvent event) {
         botonGuardar.setOnMouseClicked(event -> guardarDatosEnExcel(event));
         
         
-        botonCerrar.setOnMouseClicked(event -> {
-            cerrarVentana(event);
-        });
+       
 
         botonMinimizar.setOnMouseClicked(this::minimizarVentana);
         botonRegresar.setOnMouseClicked(event -> {
