@@ -17,6 +17,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import utilerias.general.ControladorGeneral;
 
+
 /**
  * FXML Controller class
  *
@@ -56,7 +57,11 @@ public class ExportacionReconocimientosController implements Initializable {
     @FXML
     private TextField txtFechaCurso;
     @FXML
-    private ComboBox<?> txtSemanas;
+    private ComboBox<String> txtSemanas;
+    @FXML
+    private ComboBox<String> txtFormatos;
+    @FXML
+    private Button botonLimpiar;
 
     
     
@@ -100,6 +105,14 @@ public class ExportacionReconocimientosController implements Initializable {
             }
         });
         
+        // para mostrar las semanas
+        for (int i = 1; i <= 20; i++) {
+        txtSemanas.getItems().add(String.valueOf(i));
+        }
+        // para mostrar los formatos
+        txtFormatos.getItems().addAll("PDF", "Word", "Ambos");
+        
+        
         // Inicializar el campo txtfolio como deshabilitado y oculto
         txtfolio.setVisible(false);
         txtfolio.setDisable(true);
@@ -107,13 +120,23 @@ public class ExportacionReconocimientosController implements Initializable {
         // Configurar eventos para los RadioButtons
         radiobutonsi.setOnAction(this::clicksi);
         radiobutonno.setOnAction(this::clicno);
+        
+        // desabilitar txfields para el inicio
+        txtcodigodelcurso.setDisable(true);
+        txtNombreCurso.setDisable(true);
+        txtFechaCurso.setDisable(true);
+        txtSemanas.setDisable(true);
+        txtNombreInstructor.setDisable(true);
+        txtCompetencias.setDisable(true);
+        txtFormatos.setDisable(true);
 
     }
 
     @FXML
     private void buscarCurso(ActionEvent event) {
+        txtFormatos.setDisable(false); // Habilitar campo formatos
         String folio = txtfolio.getText().trim();
-    String codigoCurso = txtcodigodelcurso.getText().trim();
+        String codigoCurso = txtcodigodelcurso.getText().trim();
 
     // Verifica si se ha ingresado un folio o un código del curso
     if (radiobutonsi.isSelected() && !folio.isEmpty()) {
@@ -142,6 +165,7 @@ public class ExportacionReconocimientosController implements Initializable {
         txtFechaCurso.setDisable(false);     // Habilitar campo para edición    
         txtNombreInstructor.setDisable(false); // Habilitar campo para edición
         txtCompetencias.setDisable(false);   // Habilitar campo para edición
+        txtSemanas.setDisable(false); // Habilitar campo semanas
         
          // Mantener deshabilitados los campos no editables
     txtNombreCurso.setDisable(true);
@@ -196,6 +220,7 @@ public class ExportacionReconocimientosController implements Initializable {
     private void clicno(ActionEvent event) {
         if (radiobutonno.isSelected()) {
             txtfolio.setDisable(true);          // Deshabilitar el campo txtfolio
+            txtfolio.setVisible(false); //Deshabilitar campo
             txtfolio.clear();                   // Limpiar el campo txtfolio
             txtcodigodelcurso.setDisable(false); // Habilitar el campo txtcodigodelcurso para escritura
         }
@@ -203,5 +228,35 @@ public class ExportacionReconocimientosController implements Initializable {
 
     @FXML
     private void escribirfolio(ActionEvent event) {
+    }
+
+    @FXML
+    private void limpiarCampos(ActionEvent event) {
+        // Limpiar todos los TextFields
+    txtfolio.clear();
+    txtcodigodelcurso.clear();
+    txtNombreCurso.clear();
+    txtNombreInstructor.clear();
+    txtCompetencias.clear();
+    txtFechaCurso.clear();
+
+    // Restablecer ComboBoxes
+    txtSemanas.getSelectionModel().clearSelection();
+    txtFormatos.getSelectionModel().clearSelection();
+
+    // Restablecer RadioButtons
+    radiobutonsi.setSelected(false);
+    radiobutonno.setSelected(false);
+
+    // Deshabilitar campos que deben estar desactivados al inicio
+    txtfolio.setVisible(false);
+    txtfolio.setDisable(true);
+    txtcodigodelcurso.setDisable(true);
+    txtNombreCurso.setDisable(true);
+    txtFechaCurso.setDisable(true);
+    txtSemanas.setDisable(true);
+    txtFormatos.setDisable(true);
+    txtNombreInstructor.setDisable(true);
+    txtCompetencias.setDisable(true);
     }
 }
