@@ -7,9 +7,10 @@
 package vistas;
 
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import java.util.Optional;
+import javafx.event.Event;
 
 /**
  * FXML Controller class
@@ -82,7 +84,37 @@ public void cerrarVentana(MouseEvent event) {
     }
 
     public void regresarVentana(MouseEvent event) throws IOException {
+    // Verificar si hay datos en los campos
+    boolean hayDatos = !directorField.getText().isEmpty() || !coordinadorField.getText().isEmpty() || 
+                       !jefeDeptoField.getText().isEmpty() || !totalDocentesField.getText().isEmpty();
+
+    // Si hay datos, mostrar mensaje de confirmación para guardar
+    if (hayDatos) {
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmación");
+        confirmacion.setHeaderText("¿Deseas guardar los datos?");
+        confirmacion.setContentText("Tienes datos ingresados en los campos. ¿Deseas guardarlos antes de regresar?");
+
+        ButtonType botonGuardar = new ButtonType("Guardar");
+        ButtonType botonNoGuardar = new ButtonType("No Guardar");
+        ButtonType botonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmacion.getButtonTypes().setAll(botonGuardar, botonNoGuardar, botonCancelar);
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+        if (resultado.isPresent()) {
+            if (resultado.get() == botonGuardar) {
+                guardarDatosEnExcel(event); // Llamar a método de guardar
+                ControladorGeneral.regresar(event, "Principal", getClass()); // Regresar a la ventana principal
+            } else if (resultado.get() == botonNoGuardar) {
+                ControladorGeneral.regresar(event, "Principal", getClass()); // Regresar sin guardar
+            }
+            // Si selecciona cancelar, no se realiza ninguna acción adicional
+        }
+    } else {
+        // Si no hay datos, regresar sin mostrar mensaje
         ControladorGeneral.regresar(event, "Principal", getClass());
+    }
     }
 
     public void cancelarVentana(MouseEvent event) {
@@ -98,11 +130,92 @@ public void cerrarVentana(MouseEvent event) {
         
         
     }
-private static final String FILE_PATH = "C:\\Users\\TUF\\Documents\\NetBeansProjects\\DesarrolloAcademico\\DatosEjemplo.xlsx"; // Cambia esto por la ruta real de tu archivo Excel
    
+
+
+    // Método para guardar los datos en un archivo Excel
+    public void guardarDatosEnExcel(MouseEvent event) {
+        
+        if (!validarCampos()) {
+            return; // Detener si la validación falla
+        }
+        // Define la ruta donde se guardará el archivo 
+        String rutaArchivo = "C:/Users/TUF/Documents/Admin/Excel/Informacion.xlsx";
+
+        // Crear un nuevo libro de Excel
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Datos");
+
+        // Crear filas y celdas, y asignarles valores desde los TextFields
+        Row row1 = sheet.createRow(0);
+        row1.createCell(0).setCellValue(directorField.getText());
+
+        Row row2 = sheet.createRow(1);
+        row2.createCell(0).setCellValue(coordinadorField.getText());
+
+        Row row3 = sheet.createRow(2);
+        row3.createCell(0).setCellValue(jefeDeptoField.getText());
+
+        Row row4 = sheet.createRow(3);
+        row4.createCell(0).setCellValue(totalDocentesField.getText());
+
+        // Intentar guardar el archivo en la ruta especificada
+        try (FileOutputStream fileOut = new FileOutputStream(rutaArchivo)) {
+            workbook.write(fileOut);
+            mostrarAlerta("Éxito"," Datos guardados exitosamente" + rutaArchivo, AlertType.INFORMATION);
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo guardar el archivo: " + e.getMessage(), AlertType.ERROR);
+            e.printStackTrace();
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    // Método para mostrar alertas en la aplicación
+    private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+    
+    // Método para validar los campos de entrada
+    private boolean validarCampos() {
+        // Validar que los campos de nombres solo contengan letras
+        if (!directorField.getText().matches("[a-zA-Z\\s]+")) {
+            mostrarAlerta("Validación", "El campo 'Director' solo debe contener letras.", AlertType.WARNING);
+            return false;
+        }
+        if (!coordinadorField.getText().matches("[a-zA-Z\\s]+")) {
+            mostrarAlerta("Validación", "El campo 'Coordinador' solo debe contener letras.", AlertType.WARNING);
+            return false;
+        }
+        if (!jefeDeptoField.getText().matches("[a-zA-Z\\s]+")) {
+            mostrarAlerta("Validación", "El campo 'Jefe de Departamento' solo debe contener letras.", AlertType.WARNING);
+            return false;
+        }
+
+        // Validar que el campo de total de docentes solo contenga números
+        if (!totalDocentesField.getText().matches("\\d+")) {
+            mostrarAlerta("Validación", "El campo 'Total de Docentes' solo debe contener números.", AlertType.WARNING);
+            return false;
+        }
+
+        return true;
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Otros botones
+        
+        // Configuración del botón Guardar para que llame al método guardarDatosEnExcel
+        botonGuardar.setOnMouseClicked(event -> guardarDatosEnExcel(event));
+        
+        
         botonCerrar.setOnMouseClicked(event -> {
             cerrarVentana(event);
         });
@@ -116,66 +229,10 @@ private static final String FILE_PATH = "C:\\Users\\TUF\\Documents\\NetBeansProj
             }
         });
         botonLimpiar.setOnMouseClicked(event -> limpiarCampos());
-        botonGuardar.setOnMouseClicked(event -> guardarDatos());
+        
 
         // Configura el evento del botón "Cancelar" para que cierre la ventana
         botonCancelar.setOnMouseClicked(event ->cancelarVentana(event));
-        cargarDatosDesdeExcel();
-    }
-
-    public void cargarDatosDesdeExcel() {
         
-        try (FileInputStream fis = new FileInputStream(new File(FILE_PATH));
-             Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Row row = sheet.getRow(0);
-
-            if (row != null) {
-                directorField.setText(row.getCell(0).getStringCellValue());
-                coordinadorField.setText(row.getCell(1).getStringCellValue());
-                jefeDeptoField.setText(row.getCell(2).getStringCellValue());
-                totalDocentesField.setText(String.valueOf((int) row.getCell(3).getNumericCellValue()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void guardarDatosEnExcel() {
-        try (FileInputStream fis = new FileInputStream(new File(FILE_PATH));
-             Workbook workbook = new XSSFWorkbook(fis);
-             FileOutputStream fos = new FileOutputStream(new File(FILE_PATH))) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Row row = sheet.getRow(0);
-
-            if (row == null) {
-                row = sheet.createRow(0);
-            }
-
-            row.createCell(0).setCellValue(directorField.getText());
-            row.createCell(1).setCellValue(coordinadorField.getText());
-            row.createCell(2).setCellValue(jefeDeptoField.getText());
-            row.createCell(3).setCellValue(Integer.parseInt(totalDocentesField.getText()));
-
-            workbook.write(fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void guardarDatos() {
-        String director = directorField.getText();
-        String coordinador = coordinadorField.getText();
-        String jefeDepto = jefeDeptoField.getText();
-        String totalDocentes = totalDocentesField.getText();
-
-        guardarDatosEnExcel();
-
-        // Aquí agrega la lógica para guardar los datos
-        System.out.println("Datos guardados: ");
-        System.out.println("Director: " + director);
-        System.out.println("Coordinador: " + coordinador);
-        System.out.println("Jefe de Departamento: " + jefeDepto);
-        System.out.println("Total de Docentes: " + totalDocentes);
     }
 }
