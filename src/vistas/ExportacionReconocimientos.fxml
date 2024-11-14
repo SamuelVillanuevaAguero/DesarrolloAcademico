@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -21,13 +21,13 @@
             <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
          </children>
       </HBox>
-      <Label layoutX="23.0" layoutY="246.0" text="Codigo del curso:" />
-      <Label layoutX="20.0" layoutY="320.0" text="Nombre del curso:" />
-      <Label layoutX="558.0" layoutY="245.0" text="Semanas:" />
-      <Label layoutX="477.0" layoutY="320.0" text="Nombre del instructor:" />
-      <Label layoutX="441.0" layoutY="398.0" prefWidth="177.0" text="Competencias desarrolladas:" />
-      <Label layoutX="654.0" layoutY="471.0" text="Formato de archivo:" />
-      <Button fx:id="botonBuscar" layoutX="352.0" layoutY="237.0" mnemonicParsing="false" onAction="#buscarCurso" styleClass="button-azul" text="Buscar" textFill="WHITE" />
+      <Label layoutX="23.0" layoutY="204.0" text="Codigo del curso:" />
+      <Label layoutX="20.0" layoutY="299.0" text="Nombre del curso:" />
+      <Label layoutX="590.0" layoutY="204.0" text="Horas:" />
+      <Label layoutX="490.0" layoutY="299.0" text="Nombre del instructor:" />
+      <Label layoutX="454.0" layoutY="407.0" prefWidth="177.0" text="Competencias desarrolladas:" />
+      <Label layoutX="514.0" layoutY="480.0" text="Formato de archivo:" />
+      <Button fx:id="botonBuscar" layoutX="418.0" layoutY="195.0" mnemonicParsing="false" onAction="#buscarCurso" styleClass="button-azul" text="Buscar" textFill="WHITE" />
       <Button fx:id="botonGuardar" layoutX="576.0" layoutY="521.0" mnemonicParsing="false" onAction="#guardarDatos" styleClass="button-azul" text="Guardar" textFill="WHITE" />
       <Button layoutX="851.0" layoutY="521.0" mnemonicParsing="false" onAction="#exportarReconocimientos" styleClass="button-azul" text="Exportar" textFill="#fffdfd" />
       <ImageView fitHeight="86.0" fitWidth="200.0" layoutX="602.0" layoutY="45.0">
@@ -50,20 +50,16 @@
             <Image url="@../utilerias/reconocimientos/logoEducacion.png" />
          </image>
       </ImageView>
-      <TextField fx:id="txtcodigodelcurso" layoutX="174.0" layoutY="234.0" prefHeight="42.0" prefWidth="123.0" styleClass="text-field" />
-      <TextField fx:id="txtNombreCurso" layoutX="176.0" layoutY="314.0" prefHeight="42.0" prefWidth="200.0" styleClass="text-field" />
-      <TextField fx:id="txtNombreInstructor" layoutX="661.0" layoutY="309.0" prefHeight="42.0" prefWidth="200.0" />
-      <RadioButton fx:id="radiobutonsi" layoutX="176.0" layoutY="175.0" mnemonicParsing="false" onAction="#clicksi" prefWidth="26.0" text="Si" />
-      <RadioButton fx:id="radiobutonno" layoutX="226.0" layoutY="175.0" mnemonicParsing="false" onAction="#clicno" text="No" />
-      <TextField fx:id="txtfolio" layoutX="282.0" layoutY="162.0" onAction="#escribirfolio" prefHeight="42.0" prefWidth="140.0" styleClass="text-field" />
-      <TextField fx:id="txtCompetencias" layoutX="661.0" layoutY="379.0" prefHeight="57.0" prefWidth="286.0" />
-      <Label layoutX="34.0" layoutY="398.0" text="Fecha del curso:" />
-      <Button layoutX="804.0" layoutY="170.0" mnemonicParsing="false" style="-fx-background-color: white;" text="¿Se actualizaron documentos?" textAlignment="CENTER" textFill="#1700c7" underline="true" />
-      <TextField fx:id="txtFechaCurso" layoutX="176.0" layoutY="387.0" prefHeight="42.0" prefWidth="159.0" />
-      <ComboBox fx:id="txtSemanas" layoutX="661.0" layoutY="235.0" prefHeight="42.0" prefWidth="150.0" />
-      <ComboBox fx:id="txtFormatos" layoutX="787.0" layoutY="461.0" prefWidth="150.0" />
-      <Label layoutX="102.0" layoutY="174.0" text="Folio:" />
+      <TextField fx:id="txtcodigodelcurso" layoutX="158.0" layoutY="193.0" prefHeight="42.0" prefWidth="200.0" styleClass="text-field" />
+      <TextField fx:id="txtNombreInstructor" layoutX="643.0" layoutY="284.0" prefHeight="50.0" prefWidth="243.0" />
+      <Label layoutX="34.0" layoutY="408.0" text="Fecha del curso:" />
+      <Button fx:id="buttonRedireccionar" layoutX="826.0" layoutY="147.0" mnemonicParsing="false" onAction="#RedireccionarArchivos" style="-fx-background-color: white;" text="¿Se actualizaron documentos?" textAlignment="CENTER" textFill="#1700c7" underline="true" />
+      <TextField fx:id="txtFechaCurso" layoutX="158.0" layoutY="396.0" prefHeight="42.0" prefWidth="278.0" />
+      <ComboBox fx:id="txtHoras" layoutX="643.0" layoutY="193.0" prefHeight="42.0" prefWidth="99.0" />
+      <ComboBox fx:id="txtFormatos" layoutX="661.0" layoutY="471.0" prefWidth="150.0" />
       <Button fx:id="botonModificar" layoutX="48.0" layoutY="521.0" mnemonicParsing="false" onAction="#modificarDatos" styleClass="button-azul" text="Modificar" textFill="WHITE" />
       <Button fx:id="botonLimpiar" layoutX="314.0" layoutY="521.0" mnemonicParsing="false" onAction="#limpiarCampos" styleClass="button-azul" text="Limpiar" />
+      <TextArea fx:id="txtAreaCompetencias" layoutX="643.0" layoutY="374.0" prefHeight="86.0" prefWidth="357.0" wrapText="true" />
+      <TextArea fx:id="txtAreaNombreCurso" layoutX="158.0" layoutY="289.0" prefHeight="50.0" prefWidth="278.0" wrapText="true" />
    </children>
 </AnchorPane>
