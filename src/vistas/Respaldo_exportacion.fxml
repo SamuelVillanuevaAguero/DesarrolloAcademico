@@ -37,15 +37,15 @@
          </image>
       </ImageView>
       <Text layoutX="81.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-field" text="Selecciona la ubicacion" />
-      <Button layoutX="571.0" layoutY="178.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="96.0" styleClass="button-azul" text="Examinar">
+      <Button fx:id="btn_examinar_export" layoutX="571.0" layoutY="178.0" mnemonicParsing="false" onAction="#examinar_exportar" prefHeight="35.0" prefWidth="96.0" styleClass="button-azul" text="Examinar">
          <font>
             <Font name="Montserrat Bold" size="13.0" />
          </font>
       </Button>
-      <TextField layoutX="225.0" layoutY="179.0" prefHeight="34.0" prefWidth="319.0" />
+      <TextField fx:id="txt_ruta_export" layoutX="225.0" layoutY="179.0" prefHeight="34.0" prefWidth="319.0" />
       <Text layoutX="81.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-field" text="Selecciona el formato" />
-      <ComboBox layoutX="225.0" layoutY="233.0" prefHeight="38.0" prefWidth="217.0" />
-      <Button layoutX="75.0" layoutY="323.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" styleClass="button-azul" text="Exportar">
+      <ComboBox fx:id="select_formato_export" layoutX="225.0" layoutY="233.0" prefHeight="38.0" prefWidth="217.0" />
+      <Button fx:id="btn_export" layoutX="75.0" layoutY="323.0" mnemonicParsing="false" onAction="#exportar_respaldo" prefHeight="35.0" prefWidth="106.0" styleClass="button-azul" text="Exportar">
          <font>
             <Font name="Montserrat Bold" size="13.0" />
          </font>
