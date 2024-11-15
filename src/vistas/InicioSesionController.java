@@ -52,33 +52,39 @@ public class InicioSesionController implements Initializable {
     @FXML
     private Label Enviando; // Label para mostrar "Enviando..."
 
-    private String usuarioPredefinido = "admin";
+    private String usuarioPredefinido = "Administrador";
     public String contraseñaPredefinida;
 
     private static final String FILE_PATH = "contraseña_historial.txt";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        //Carga la ultima contraseña para el incio de sesion.
         cargarUltimaContraseña();
+
+        //A primera instancia no se ve el panel de RestablecerContraseña
         PaneRestablcer.setVisible(false);
 
         // Inicialmente, el label "Enviando..." está oculto
         Enviando.setVisible(false);
 
+        //Botones de cerrar/minimizar ventana
         botonCerrar.setOnMouseClicked(event -> cerrarVentana());
         botonMinimizar.setOnMouseClicked(event -> minimizarVentana(event));
 
+        //Metodo para ver la contraseña
         botonVerContraseña.setOnMousePressed(event -> {
             IngresaContraseña.setVisible(false);
             abajocontraseña.setText(IngresaContraseña.getText());
             abajocontraseña.setVisible(true);
         });
-
         botonVerContraseña.setOnMouseReleased(event -> {
             IngresaContraseña.setVisible(true);
             abajocontraseña.setVisible(false);
         });
 
+        //Boton de iniciar sesion con mensajr de usuario/contraseña incorrectos.
         botonIniciarSesion.setOnMouseClicked(event -> {
             if (validarCredenciales()) {
                 cargarVistaPrincipal();
@@ -87,37 +93,50 @@ public class InicioSesionController implements Initializable {
             }
         });
 
+        //Label restablecer contraseña muestra el pane de restablecer contraseña
         RestablecerContraseña.setOnMouseClicked(event -> {
             Enviando.setVisible(false); // Aseguramos que Enviando esté oculto cuando se abre el panel
             PaneRestablcer.setVisible(true);
         });
 
+        //Boton para cerrar el pane restablecer contraseña.
         CerrarRestablecer.setOnMouseClicked(event -> PaneRestablcer.setVisible(false));
 
+        //Boton Enviar correo.
         EnviarCorreo.setOnMouseClicked(event -> restablecerContraseña());
     }
 
+    //Metodo de cargaar la ultima contrseña.
     private void cargarUltimaContraseña() {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String linea, ultimaLinea = null;
             while ((linea = br.readLine()) != null) {
-                ultimaLinea = linea;
+                ultimaLinea = linea; // Captura la última línea del archivo
             }
-            contraseñaPredefinida = (ultimaLinea != null) ? ultimaLinea : "123";
+
+            if (ultimaLinea != null) {
+                // Extrae la contraseña de la línea
+                String[] partes = ultimaLinea.split(" \\| "); // Asume que el formato es "contraseña | fechaHora"
+                contraseñaPredefinida = partes[0]; // La primera parte es la contraseña
+            } else {
+                contraseñaPredefinida = "123"; // Contraseña predeterminada si el archivo está vacío
+            }
         } catch (IOException e) {
-            contraseñaPredefinida = "123";
+            contraseñaPredefinida = "123"; // Contraseña predeterminada en caso de error
         }
     }
 
+    //Guarda la nueva contraseña generada en el archivo con fecha y hora.
     private void guardarContraseñaEnArchivo(String nuevaContraseña) {
         String fechaHora = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date());
         try (FileWriter fw = new FileWriter(FILE_PATH, true)) {
-            fw.write(nuevaContraseña + " | " + fechaHora + "\n");
+            fw.write(nuevaContraseña + " | " + fechaHora + "\n"); // Guardar en el formato "contraseña | fechaHora"
         } catch (IOException e) {
             mostrarAlertaError("No se pudo guardar la nueva contraseña.");
         }
     }
 
+    //Genera la contraseña aleatoria.
     private String generarContraseñaAleatoria() {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder nuevaContraseña = new StringBuilder();
@@ -128,6 +147,7 @@ public class InicioSesionController implements Initializable {
         return nuevaContraseña.toString();
     }
 
+    //Mensaje de exito
     private void mostrarAlertaExito(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle("Éxito");
@@ -143,6 +163,7 @@ public class InicioSesionController implements Initializable {
         });
     }
 
+    //Mensaje de error.
     private void mostrarAlertaError(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setTitle("Error");
@@ -151,6 +172,7 @@ public class InicioSesionController implements Initializable {
         alerta.showAndWait();
     }
 
+    //Metodo de cerrar ventana de inicio sesion.
     private void cerrarVentana() {
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
         alerta.setTitle("Sesión");
@@ -161,15 +183,18 @@ public class InicioSesionController implements Initializable {
         }
     }
 
+    //Metodo para minimizar la ventana inicio de sesion.
     private void minimizarVentana(MouseEvent event) {
         ControladorGeneral.minimizarVentana(event);
     }
 
+    //valida las credenciales.
     private boolean validarCredenciales() {
         return IngresaUsuario.getText().equals(usuarioPredefinido)
                 && IngresaContraseña.getText().equals(contraseñaPredefinida);
     }
 
+    //Redirecciona a la vista principal.
     private void cargarVistaPrincipal() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/principal.fxml"));
@@ -183,37 +208,46 @@ public class InicioSesionController implements Initializable {
         }
     }
 
+    //Dentro del panel restablcer contraseña enviar un correo a los destinos marcados.
     private void restablecerContraseña() {
-        // Mostrar el mensaje "Enviando..." cuando se hace clic en el botón
-        Enviando.setVisible(true);
+        Enviando.setVisible(true); // Mostrar el mensaje "Enviando..."
 
-        String destinatario = "L21091003@zacatepec.tecnm.mx";
+        String[] destinatarios = {
+            "L21091003@zacatepec.tecnm.mx",
+            "xochitlmaritzafloressarabia@gmail.com" // Lista de destinatarios
+        };
+
         String nuevaContraseña = generarContraseñaAleatoria();
-        guardarContraseñaEnArchivo(nuevaContraseña);
-        contraseñaPredefinida = nuevaContraseña;
+        guardarContraseñaEnArchivo(nuevaContraseña); // Guardar nueva contraseña
+        contraseñaPredefinida = nuevaContraseña; // Actualizar contraseña predefinida
 
-        // Hacer el envío del correo en un hilo separado para evitar bloquear la interfaz
         new Thread(() -> {
-            boolean correoEnviado = enviarCorreoNuevaContraseña(destinatario, nuevaContraseña);
+            boolean todosEnviadosConExito = true; // Declarar fuera del ciclo
 
-            // Actualizar la interfaz de usuario desde el hilo principal
+            for (String destinatario : destinatarios) {
+                if (!enviarCorreoNuevaContraseña(destinatario, nuevaContraseña)) {
+                    todosEnviadosConExito = false; // Si falla al menos uno, marcar como error
+                }
+            }
+
+            // Actualizar la interfaz en el hilo principal
+            final boolean resultadoFinal = todosEnviadosConExito; // Capturar el resultado para Platform.runLater
             Platform.runLater(() -> {
-                // Ocultar el mensaje "Enviando..."
-                Enviando.setVisible(false);
+                Enviando.setVisible(false); // Ocultar "Enviando..."
 
-                // Mostrar la alerta de éxito o error dependiendo del resultado
-                if (correoEnviado) {
+                if (resultadoFinal) {
                     mostrarAlertaExito("Correo enviado con nueva contraseña.");
                 } else {
-                    mostrarAlertaError("No se pudo enviar el correo.");
+                    mostrarAlertaError("No se pudo enviar a uno o más destinatarios.");
                 }
             });
         }).start();
     }
 
+    //Metodo para enviar la nueva cocntraseña desde el correo de restablecer contraseña.
     private boolean enviarCorreoNuevaContraseña(String destinatario, String nuevaContraseña) {
-        String remitente = "xochitlmaritzafloressarabia@gmail.com";
-        String pass = "cjqhvctyrvqsnevb";
+        String remitente = "desarrolloacademico.pass@gmail.com";
+        String pass = "owcvxxhxlyeydvqk";
 
         Properties propiedades = new Properties();
         propiedades.put("mail.smtp.host", "smtp.gmail.com");
