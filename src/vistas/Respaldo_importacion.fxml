@@ -36,13 +36,13 @@
          </image>
       </ImageView>
       <Text layoutX="91.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-field" text="Selecciona la ubicacion" />
-      <Button layoutX="581.0" layoutY="188.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="96.0" styleClass="button-azul" text="Examinar">
+      <Button fx:id="btn_examinar_import" layoutX="581.0" layoutY="188.0" mnemonicParsing="false" onAction="#examinar_importar" prefHeight="35.0" prefWidth="96.0" styleClass="button-azul" text="Examinar">
          <font>
             <Font name="Montserrat Bold" size="13.0" />
          </font>
       </Button>
-      <TextField layoutX="235.0" layoutY="189.0" prefHeight="34.0" prefWidth="319.0" />
-      <Button layoutX="85.0" layoutY="333.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" styleClass="button-azul" text="Importar">
+      <TextField fx:id="txt_ruta_import" layoutX="235.0" layoutY="189.0" prefHeight="34.0" prefWidth="319.0" />
+      <Button fx:id="btn_importar_importar" layoutX="85.0" layoutY="333.0" mnemonicParsing="false" onAction="#importacion_importar" prefHeight="35.0" prefWidth="106.0" styleClass="button-azul" text="Importar">
          <font>
             <Font name="Montserrat Bold" size="13.0" />
          </font>
