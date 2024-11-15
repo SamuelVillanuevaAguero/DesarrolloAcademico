@@ -4,6 +4,7 @@
  */
 package vistas;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import utilerias.general.ControladorGeneral;
 
@@ -38,13 +40,15 @@ public class RespaldoController implements Initializable {
     private Button botonMinimizar;
     @FXML
     private Button botonRegresar;
-         @FXML
-    private Button btn_exportar;
     @FXML
-    private Button btn_importar;
+    private TextField txt_ruta_import;
+    @FXML
+    private Button btn_examinar_import;
+    @FXML
+    private Button btn_importar_importar;
     
     
-  
+
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) throws IOException{
         ControladorGeneral.cerrarVentana(event, "¿Quieres cerrar sesión?", getClass());
@@ -82,7 +86,6 @@ public class RespaldoController implements Initializable {
             }
         });
     }
-
     @FXML
     private void ir_exportar(ActionEvent event) {
     try {
@@ -94,10 +97,9 @@ public class RespaldoController implements Initializable {
         Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
-
     @FXML
-    private void ir_importar(ActionEvent event) {
-    try {
+    private void ir_importart(ActionEvent event) {
+           try {
         Parent root = FXMLLoader.load(getClass().getResource("/vistas/Respaldo_importacion.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
@@ -106,5 +108,20 @@ public class RespaldoController implements Initializable {
         Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
     }
     }
+    @FXML
+    private void examinar_importar(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo de respaldo");
+        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+        if (file != null) {
+            txt_ruta_import.setText(file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void importacion_importar(ActionEvent event) {
+        // Lógica para importar el archivo seleccionado
+    }
+
     
 }
