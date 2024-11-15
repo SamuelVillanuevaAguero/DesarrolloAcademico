@@ -21,6 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 import utilerias.general.ControladorGeneral;
 
 /**
@@ -120,7 +121,32 @@ public class RespaldoController implements Initializable {
 
     @FXML
     private void importacion_importar(ActionEvent event) {
-        // Lógica para importar el archivo seleccionado
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/ConfirmacionImportacion.fxml"));
+            Parent root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Confirmación de Importación");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            ConfirmacionImportacionController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            dialogStage.showAndWait();
+
+            if (controller.isConfirmado()) {
+                // Lógica para importar el archivo seleccionado
+                System.out.println("Importando respaldo...");
+            } else {
+                // Lógica para cancelar la importación
+                System.out.println("Importación cancelada.");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     
