@@ -13,48 +13,75 @@
 <?import javafx.scene.layout.Region?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="1012.0" stylesheets="@../utilerias/general/Estilo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vistas.InicioSesionController">
-   <children>
-      <ImageView fitHeight="599.0" fitWidth="526.0" layoutY="-19.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../utilerias/inicioSesion/logoTecno.png" />
-         </image>
-      </ImageView>
-      <HBox prefHeight="12.0" prefWidth="1012.0" styleClass="hbox">
-         <children>
-            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="botonMinimizar" mnemonicParsing="false" styleClass="title-button" text="-" />
-            <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
-         </children>
-      </HBox>
-      <Label layoutX="526.0" layoutY="53.0" prefHeight="98.0" prefWidth="416.0" style="-fx-font-size: 20;" styleClass="title" text="Sistema de Gestión de Cursos para el Departamento de Desarrollo Académico de TecNM / IT Zacatepec" textAlignment="CENTER" wrapText="true" />
-      <Pane layoutX="551.0" layoutY="165.0" prefHeight="387.0" prefWidth="367.0" styleClass="card-info">
-         <children>
-            <Label layoutX="68.0" layoutY="25.0" style="-fx-font-size: 32;" styleClass="title" text="Inicio de sesión" />
-            <TextField fx:id="abajocontraseña" layoutX="23.0" layoutY="170.0" prefHeight="49.0" prefWidth="319.61" styleClass="username-field" />
-            <PasswordField fx:id="IngresaContraseña" layoutX="23.0" layoutY="170.0" prefHeight="49.0" prefWidth="319.61" promptText="Ingresa tu contraseña" styleClass="password-field" />
-            <TextField fx:id="IngresaUsuario" layoutX="24.0" layoutY="95.0" prefHeight="49.0" prefWidth="319.61" promptText="Ingresa tu usuario" styleClass="username-field" />
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="31.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../utilerias/inicioSesion/logoUsuario.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="32.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../utilerias/inicioSesion/logoCandado.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="botonVerContraseña" fitHeight="20.0" fitWidth="23.0" layoutX="307.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../utilerias/inicioSesion/logoOjo.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-            <Button fx:id="botonIniciarSesion" layoutX="25.0" layoutY="248.0" mnemonicParsing="false" prefWidth="318.0" style="-fx-font-size: 16; -fx-font-weight: bold;" styleClass="button-azul" text="Iniciar sesión" />
-            <Label layoutX="25.0" layoutY="333.0" style="-fx-font-size: 11; -fx-font-weight: bold;" text="¿Olvidaste tu contraseña?" />
-            <Label layoutX="217.0" layoutY="334.0" style="-fx-font-size: 11;" styleClass="label-vinculo" text="Restablecer Contraseña" />
-         </children>
-      </Pane>
-   </children>
+    <children>
+        <ImageView fitHeight="599.0" fitWidth="526.0" layoutY="-19.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../utilerias/inicioSesion/logoTecno.png" />
+            </image>
+        </ImageView>
+        <HBox prefHeight="12.0" prefWidth="1012.0" styleClass="hbox">
+            <children>
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="botonMinimizar" mnemonicParsing="false" styleClass="title-button" text="-" />
+                <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
+            </children>
+        </HBox>
+        <Label layoutX="526.0" layoutY="53.0" prefHeight="98.0" prefWidth="416.0" style="-fx-font-size: 20;" styleClass="title" text="Sistema de Gestión de Cursos para el Departamento de Desarrollo Académico de TecNM / IT Zacatepec" textAlignment="CENTER" wrapText="true" />
+        <Pane layoutX="551.0" layoutY="165.0" prefHeight="387.0" prefWidth="367.0" styleClass="card-info">
+            <children>
+                <Label layoutX="68.0" layoutY="25.0" style="-fx-font-size: 32;" styleClass="title" text="Inicio de sesión" />
+                <TextField fx:id="abajocontraseña" layoutX="23.0" layoutY="170.0" prefHeight="49.0" prefWidth="319.61" styleClass="username-field" />
+                <PasswordField fx:id="IngresaContraseña" layoutX="23.0" layoutY="170.0" prefHeight="49.0" prefWidth="319.61" promptText="Ingresa tu contraseña" styleClass="password-field" />
+                <TextField fx:id="IngresaUsuario" layoutX="24.0" layoutY="95.0" prefHeight="49.0" prefWidth="319.61" promptText="Ingresa tu usuario" styleClass="username-field" />
+                <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="31.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../utilerias/inicioSesion/logoUsuario.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="32.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../utilerias/inicioSesion/logoCandado.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="botonVerContraseña" fitHeight="20.0" fitWidth="23.0" layoutX="307.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../utilerias/inicioSesion/logoOjo.png" />
+                    </image>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </ImageView>
+                <Button fx:id="botonIniciarSesion" layoutX="25.0" layoutY="248.0" mnemonicParsing="false" prefWidth="318.0" style="-fx-font-size: 16; -fx-font-weight: bold;" styleClass="button-azul" text="Iniciar sesión" />
+                <Label layoutX="25.0" layoutY="333.0" style="-fx-font-size: 11; -fx-font-weight: bold;" text="¿Olvidaste tu contraseña?" />
+                <Label fx:id="RestablecerContraseña" layoutX="217.0" layoutY="334.0" style="-fx-font-size: 11;" styleClass="label-vinculo" text="Restablecer Contraseña" />
+            </children>
+        </Pane>
+        <Pane fx:id="PaneRestablcer" layoutX="329.0" layoutY="89.0" prefHeight="402.0" prefWidth="353.0" styleClass="card-info">
+            <children>
+                <Pane layoutX="61.0" layoutY="215.0" prefHeight="30.0" prefWidth="231.0" styleClass="username-field">
+                    <children>
+                        <Label layoutX="26.0" layoutY="6.0" style="-fx-font-weight: bold; -fx-font-size: 12;" text="martha.cl@zacatepec.tecnm.mx" />
+                    </children>
+                </Pane>
+                <Pane layoutX="60.0" layoutY="158.0" prefHeight="30.0" prefWidth="231.0" styleClass="username-field">
+                    <children>
+                        <Label layoutX="42.0" layoutY="6.0" style="-fx-font-size: 12; -fx-font-weight: bold;" text="dda.zacatepec@tecnm.mx" />
+                    </children>
+                </Pane>
+                <Label layoutX="67.0" layoutY="28.0" style="-fx-font-size: 20;" styleClass="title" text="Restablecer Contraseña" />
+                <Label layoutX="23.0" layoutY="72.0" prefHeight="42.0" prefWidth="304.0" style="-fx-font-weight: bold; -fx-font-size: 12;" text="La nueva contraseña se enviara a los siguientes correos." textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="EnviarCorreo" layoutX="122.0" layoutY="310.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="106.0" style="-fx-font-weight: bold; -fx-font-size: 16;" styleClass="button-azul" text="Enviar">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Label fx:id="CerrarRestablecer" alignment="CENTER" contentDisplay="CENTER" layoutX="323.0" layoutY="10.0" prefHeight="20.0" prefWidth="20.0" style="-fx-font-weight: BOLD;" text="X" textAlignment="CENTER" textFill="RED" wrapText="true">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+            <Label fx:id="Enviando" layoutX="124.0" layoutY="184.0" style="-fx-font-size: 15; -fx-font-weight: BOLD;" styleClass="text-field" text="ENVIANDO..." />
+            </children>
+        </Pane>
+    </children>
 </AnchorPane>
