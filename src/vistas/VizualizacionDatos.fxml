@@ -2,8 +2,6 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -22,7 +20,7 @@
             <Button fx:id="botonCerrar" mnemonicParsing="false" styleClass="title-button" text="x" />
          </children>
       </HBox>
-      <Button fx:id="botonExportar" layoutX="903.0" layoutY="533.0" mnemonicParsing="false" onAction="#Exportar" prefHeight="38.0" prefWidth="97.0" styleClass="button-azul" text="EXPORTAR" textFill="#ecf2e9" />
+      <Button fx:id="botonExportar" layoutX="903.0" layoutY="533.0" mnemonicParsing="false" onAction="#Exportar" prefHeight="38.0" prefWidth="97.0" styleClass="button-azul" text="Exportar" textFill="#ecf2e9" />
       <ImageView fitHeight="86.0" fitWidth="200.0" layoutX="14.0" layoutY="52.0">
          <image>
             <Image url="@../utilerias/visualizacionDatos/logoTecno.png" />
@@ -33,55 +31,24 @@
             <Image url="@../utilerias/visualizacionDatos/logoITZ.png" />
          </image>
       </ImageView>
-      <Slider layoutX="12.0" layoutY="508.0" prefHeight="14.0" prefWidth="1007.0" />
-      <Slider layoutX="1020.0" layoutY="142.0" orientation="VERTICAL" prefHeight="373.0" prefWidth="14.0" />
       <Button fx:id="botonActualizar" layoutX="521.0" layoutY="536.0" mnemonicParsing="false" onAction="#actuzalizar" style="-fx-background-color: #00000000;" text="¿Se actualizaron los documentos?" textFill="#4242b4" underline="true">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <TableView layoutX="12.0" layoutY="145.0" prefHeight="359.0" prefWidth="1007.0">
-        <columns>
-          <TableColumn fx:id="colNombre" prefWidth="75.20004272460938" text="Nombre" />
-          <TableColumn fx:id="colApellidoPat" prefWidth="77.5999755859375" text="Ap. Pat" />
-            <TableColumn fx:id="colApellidoMat" text="Ap. Mat" />
-            <TableColumn fx:id="colRFC" prefWidth="61.60005187988281" text="RFC" />
-            <TableColumn fx:id="colSexo" prefWidth="55.20001220703125" text="Sexo" />
-            <TableColumn fx:id="colNombreCurso" prefWidth="85.60003662109375" text=" Nom. Curso" />
-            <TableColumn fx:id="colFecha" prefWidth="98.39999389648438" text="Fecha">
-               <columns>
-                  <TableColumn fx:id="colInicio" prefWidth="45.5999755859375" text="Inicio" />
-                  <TableColumn fx:id="colFin" prefWidth="59.99993896484375" text="Fin" />
-               </columns>
-            </TableColumn>
-            <TableColumn fx:id="colDepartamento" prefWidth="103.99993896484375" text="Departamento">
-               <columns>
-                  <TableColumn fx:id="colLicenciatura" prefWidth="58.4000244140625" text="Lic." />
-                  <TableColumn fx:id="colPosgrado" prefWidth="57.60003662109375" text="Pos." />
-               </columns>
-            </TableColumn>
-            <TableColumn fx:id="colPuesto" prefWidth="50.4000244140625" text="Puesto" />
-            <TableColumn fx:id="colInstructor" prefWidth="60.0" text="Instructor" />
-            <TableColumn fx:id="colCapacitacion" prefWidth="68.00006103515625" text="Cpacitacion">
-               <columns>
-                  <TableColumn fx:id="colActDocente" prefWidth="75.0" text="Actualizacion profecional" />
-                  <TableColumn fx:id="colFormDocente" prefWidth="75.0" text="Formacion docente" />
-               </columns>
-            </TableColumn>
-            <TableColumn fx:id="colAcreditacion" prefWidth="83.2000610351563" text="Acreditacion" />
-        </columns>
-      </TableView>
       <Button fx:id="botonModificar" layoutX="283.0" layoutY="536.0" mnemonicParsing="false" onAction="#modificar" style="-fx-background-color: #00000000;" text="¿Hay alguna modificacion de datos?" textFill="#4242b4" underline="true">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="botonGuardar" layoutX="775.0" layoutY="533.0" mnemonicParsing="false" onAction="#guardar" prefHeight="38.0" prefWidth="98.0" styleClass="button-azul" text="GUARDAR" />
-      <TextField layoutX="425.0" layoutY="88.0" text="Buscar" />
+      <Button fx:id="botonGuardar" layoutX="775.0" layoutY="533.0" mnemonicParsing="false" onAction="#guardar" prefHeight="38.0" prefWidth="98.0" styleClass="button-azul" text="Guardar" />
+      <TextField fx:id="campoBusqueda" layoutX="379.0" layoutY="89.0" prefHeight="32.0" prefWidth="200.0" />
       <ImageView layoutX="556.0" layoutY="94.0">
          <image>
             <Image url="@../utilerias/visualizacionDatos/logoLupa.png" />
          </image>
       </ImageView>
+      <Button fx:id="botonBuscar" layoutX="603.0" layoutY="84.0" mnemonicParsing="false" onAction="#Buscar" styleClass="button-azul" text="Buscar" />
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="150.0" prefHeight="356.0" prefWidth="1019.0" />
    </children>
 </AnchorPane>
