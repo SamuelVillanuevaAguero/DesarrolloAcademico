@@ -33,7 +33,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="61.0" layoutY="62.0" text="Programa de Capacitación" />
+            <Label layoutX="61.0" layoutY="62.0" text="Programa Institucional:" />
             <Label layoutX="60.0" layoutY="135.0" text="Elije un listado a importar: " />
             <ComboBox fx:id="comboBoxListados" layoutX="244.0" layoutY="126.0" prefHeight="38.0" prefWidth="238.0" />
             <Label layoutX="61.0" layoutY="203.0" text="Elije un formato a importar:" />
