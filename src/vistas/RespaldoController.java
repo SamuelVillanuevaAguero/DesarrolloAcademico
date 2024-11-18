@@ -99,10 +99,10 @@ public class RespaldoController implements Initializable {
 
         // Verificar si el ComboBox select_formato_export no es null antes de inicializarlo
         if (select_formato_export != null) {
-            select_formato_export.getItems().addAll("Formato 1", "Formato 2", "Formato 3");
+            select_formato_export.getItems().addAll("RAR", "ZIP");
         }
     }
-    
+   
     // Methodos de la vista de exportar respaldo
     @FXML
     private void ir_exportar(ActionEvent event) {
