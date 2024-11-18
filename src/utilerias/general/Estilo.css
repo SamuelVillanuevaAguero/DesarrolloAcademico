@@ -20,7 +20,93 @@
     -fx-cursor: hand; /* Cursor tipo mano */  
 }  
 
+/* APARTADO DE NOTIFICACIONES ------------------------------------------------------------------------------------------------------------------------------------------------- */  
 
+.scroll-paneNoti {
+    -fx-background-color: transparent;
+}
+
+
+.notificationPane {
+    -fx-background-color: white; /* Color de fondo suave */
+    -fx-padding: 15px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5); /* Sombra */
+    -fx-max-width: 300px; /* Ancho máximo del Pane */
+    -fx-max-height: 400px; /* Alto máximo del Pane */
+    -fx-alignment: top-right;
+}
+
+.notificationBox {
+    -fx-background-color: white; /* Color de fondo suave */
+    -fx-padding: 15px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5); /* Sombra */
+    -fx-max-width: 320px; /* Ancho máximo del Pane */
+    -fx-max-height: 400px; /* Alto máximo del Pane */
+    -fx-alignment: top-right;
+}
+
+.cerrarNotificacion {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ff5c5c; /* Color de texto rojo */
+    -fx-font-weight: bold;
+    -fx-alignment: top-right;
+    -fx-cursor: hand; /* Cursor de mano para indicar que es interactivo */
+}
+
+.cerrarNotificacion:hover {
+    -fx-text-fill: #ff0000; /* Cambia a rojo intenso al pasar el ratón */
+}
+
+/* DOCENTE */
+.docentesContainer {
+    -fx-background-color: #ffffff; /* Fondo blanco */
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-max-height: 300px; /* Limita la altura máxima para la lista */
+    -fx-overflow-y: auto; /* Permite scroll vertical */
+}
+
+/* Estilo de cada elemento de la lista de docentes */
+.docente-item {
+    -fx-background-color: #fafafa;
+    -fx-padding: 8px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #333;
+}
+
+.docente-item:hover {
+    -fx-background-color: #e0f7fa; /* Color de fondo al pasar el ratón */
+}
+
+/* Texto del nombre del docente */
+.docente-name {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Indicador de necesidad de capacitación */
+.necesita-fp, .necesita-ad {
+    -fx-font-size: 11px;
+    -fx-text-fill: #666;
+}
+
+/* APARTADO DE NOTIFICACIONES ------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 .title-button:hover {  
     -fx-background-color: #1d3557; /* Color al hover */  
