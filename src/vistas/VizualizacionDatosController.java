@@ -1,6 +1,9 @@
 package vistas;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,14 +28,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -77,7 +85,7 @@ public class VizualizacionDatosController implements Initializable {
         cargarDatos();
     }
 
-    private void configurarTabla() {
+     private void configurarTabla() {
         TableColumn<Evento, String> colHoraInicio = new TableColumn<>("Fecha de Inicio");
         colHoraInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
 
@@ -113,20 +121,92 @@ public class VizualizacionDatosController implements Initializable {
 
         TableColumn<Evento, String> colPeriodo = new TableColumn<>("Periodo");
         colPeriodo.setCellValueFactory(new PropertyValueFactory<>("periodo"));
-       
-       // Configuración de la columna de acreditación
-TableColumn<Evento, Boolean> colAcreditacion = new TableColumn<>("Acreditación");
-colAcreditacion.setCellValueFactory(cellData -> cellData.getValue().acreditadoProperty());
 
-// Configuración de CheckBoxTableCell correctamente enlazado a la propiedad Boolean
-colAcreditacion.setCellFactory(CheckBoxTableCell.forTableColumn(colAcreditacion));
+        // Columna de botones
+        TableColumn<Evento, Void> colAcreditacion = new TableColumn<>("Acreditación");
+        colAcreditacion.setCellFactory(getButtonCellFactory());
 
-// Agregar todas las columnas, incluida la acreditación
-tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
-        colApellidoMaterno, colNombres, colRFC, colSexo, colDepartamento,
-        colPuesto, colNombreEvento, colNombreFacilitador, colPeriodo, colAcreditacion);
-
+        tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
+                colApellidoMaterno, colNombres, colRFC, colSexo, colDepartamento,
+                colPuesto, colNombreEvento, colNombreFacilitador, colPeriodo, colAcreditacion);
     }
+
+private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCellFactory() {
+    return param -> new TableCell<>() {
+        private final Button btnAcredita = new Button();
+        private final Button btnNoAcredita = new Button();
+
+        {
+            // Cargar las imágenes desde los recursos
+            Image imagePalomita = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png"));
+            Image imageTacha = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png"));
+
+            // Crear ImageView para redimensionar las imágenes
+            ImageView iconPalomita = new ImageView(imagePalomita);
+            iconPalomita.setFitWidth(16); // Ancho del ícono
+            iconPalomita.setFitHeight(16); // Alto del ícono
+
+            ImageView iconTacha = new ImageView(imageTacha);
+            iconTacha.setFitWidth(16); // Ancho del ícono
+            iconTacha.setFitHeight(16); // Alto del ícono
+
+            // Asignar los íconos redimensionados a los botones
+            btnAcredita.setGraphic(iconPalomita);
+            btnNoAcredita.setGraphic(iconTacha);
+
+            // Configurar acciones de los botones
+            btnAcredita.setOnAction(event -> {
+                Evento evento = getTableView().getItems().get(getIndex());
+                evento.setAcreditado(true);
+                updateButtons(evento); // Actualiza la interfaz
+            });
+
+            btnNoAcredita.setOnAction(event -> {
+                Evento evento = getTableView().getItems().get(getIndex());
+                evento.setAcreditado(false);
+                updateButtons(evento); // Actualiza la interfaz
+            });
+        }
+
+        private void updateButtons(Evento evento) {
+            // Cambia los gráficos de los botones según el estado
+            if (evento.isAcreditado()) {
+                ImageView iconPalomita = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png")));
+                iconPalomita.setFitWidth(16);
+                iconPalomita.setFitHeight(16);
+                btnAcredita.setGraphic(iconPalomita);
+                btnNoAcredita.setGraphic(null); // Ocultar el botón de tacha
+            } else {
+                ImageView iconTacha = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png")));
+                iconTacha.setFitWidth(16);
+                iconTacha.setFitHeight(16);
+                btnNoAcredita.setGraphic(iconTacha);
+                btnAcredita.setGraphic(null); // Ocultar el botón de palomita
+            }
+        }
+
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+            } else {
+                Evento evento = getTableView().getItems().get(getIndex());
+                updateButtons(evento);
+
+                // Organizar los botones en un VBox para alineación vertical
+                VBox vbox = new VBox(btnAcredita, btnNoAcredita);
+                vbox.setSpacing(5);
+                setGraphic(vbox);
+            }
+        }
+    };
+}
+
+
+
+    
+
 
     private void cargarDatos() {
         try {
@@ -139,9 +219,41 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
 
     @FXML
     private void Exportar(ActionEvent event) {
-        mostrarAlerta("Exportar", "La función Exportar aún no está implementada.", AlertType.INFORMATION);
+        // Crear un FileChooser para seleccionar dónde guardar el archivo
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar archivo");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "ListaAsistencia.csv"));
+
+        // Abrir el diálogo de guardar
+        var file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            try (FileWriter writer = new FileWriter(file)) {
+                // Escribir encabezados en el archivo CSV
+                writer.write("Nombre del Participante, Curso\n");
+
+                // Recorrer las filas de la tabla
+                List<Evento> participantes = tableView.getItems();
+                for (Evento participante : participantes) {
+                    // Filtrar por curso y acreditación
+                    if (participante.getNombreEvento().equals(campoBusqueda) && participante.isAcreditado()) {
+                        writer.write(participante.getNombres() + ", " + participante.getNombreEvento() + "\n");
+                    }
+                }
+
+                System.out.println("Archivo exportado con éxito");
+            } catch (IOException e) {
+                System.out.println("Error al exportar: " + e.getMessage());
+            }
+        }
     }
 
+    private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+    
     @FXML
     private void Buscar(ActionEvent event) {
         String textoBusqueda = campoBusqueda.getText().trim().toLowerCase();
@@ -192,13 +304,7 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
         campoBusqueda.clear();
     }
 
-    private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
+  
     @FXML
     private void actuzalizar(ActionEvent event) {
         try {
@@ -227,48 +333,86 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
         }
     }
 
-    @FXML
-    private void guardar(ActionEvent event) {
-        // Lógica para guardar los datos
-        boolean guardadoExitoso = guardarDatos();
+   @FXML
+private void guardar(ActionEvent event) {
+    // Lógica para guardar los datos
+    boolean guardadoExitoso = guardarDatos();
 
-        // Mostrar mensaje de confirmación si se guarda correctamente
-        if (guardadoExitoso) {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Confirmación de Guardado");
-            alert.setHeaderText(null);
-            alert.setContentText("Los datos han sido guardados correctamente.");
-            alert.showAndWait();
-        } else {
-            // Mostrar mensaje de error en caso de falla
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error al Guardar");
-            alert.setHeaderText(null);
-            alert.setContentText("Hubo un error al guardar los datos.");
-            alert.showAndWait();
-        }
+    // Mostrar mensaje de confirmación si se guarda correctamente
+    if (guardadoExitoso) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Confirmación de Guardado");
+        alert.setHeaderText(null);
+        alert.setContentText("Los datos han sido guardados correctamente.");
+        alert.showAndWait();
+    } else {
+        // Mostrar mensaje de error en caso de falla
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error al Guardar");
+        alert.setHeaderText(null);
+        alert.setContentText("Hubo un error al guardar los datos.");
+        alert.showAndWait();
     }
+}
 
-    private boolean guardarDatos() {
-        try {
-            // Aquí agregas la lógica de guardado
-            // Ejemplo de lógica de guardado en un archivo de texto
-            // Puedes reemplazarlo con lógica de guardado en base de datos o Excel
-            FileWriter fileWriter = new FileWriter("datos_guardados.txt", true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
+private boolean guardarDatos() {
+    try {
+        // Crear un libro de Excel
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Datos");
 
-            // Suponiendo que tienes datos que quieres guardar, escribe aquí el contenido
-            printWriter.println("Ejemplo de dato guardado");
+        // Crear una fila de encabezados
+        Row headerRow = sheet.createRow(0);
+        String[] columnas = {
+            "HoraInicio", "HoraFinal", "ApellidoPaterno", "ApellidoMaterno", "Nombres",
+            "RFC", "Sexo", "Departamento", "Puesto", "NombreEvento",
+            "NombreFacilitador", "Periodo", "Acreditación"
+        };
 
-            printWriter.close(); // Cierra el archivo después de guardar
-
-            return true; // Indica que se guardó correctamente
-
-        } catch (IOException e) {
-            e.printStackTrace(); // Imprime el error para depuración
-            return false; // Indica que hubo un error al guardar
+        // Añadir encabezados a la fila
+        for (int i = 0; i < columnas.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columnas[i]);
         }
+
+        // Añadir datos desde el TableView
+        int rowIndex = 1; // Empezar en la segunda fila
+        for (Evento evento : tableView.getItems()) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(evento.getHoraInicio());
+            row.createCell(1).setCellValue(evento.getHoraFinal());
+            row.createCell(2).setCellValue(evento.getApellidoPaterno());
+            row.createCell(3).setCellValue(evento.getApellidoMaterno());
+            row.createCell(4).setCellValue(evento.getNombres());
+            row.createCell(5).setCellValue(evento.getRfc());
+            row.createCell(6).setCellValue(evento.getSexo());
+            row.createCell(7).setCellValue(evento.getDepartamento());
+            row.createCell(8).setCellValue(evento.getPuesto());
+            row.createCell(9).setCellValue(evento.getNombreEvento());
+            row.createCell(10).setCellValue(evento.getNombreFacilitador());
+            row.createCell(11).setCellValue(evento.getPeriodo());
+            row.createCell(12).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
+        }
+
+        // Autoajustar el ancho de las columnas
+        for (int i = 0; i < columnas.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Guardar el archivo en C:\excel\datos_guardados.xlsx
+        String filePath = "C:/excel/datos_guardados.xlsx";
+        try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        return true; // Indica que se guardó correctamente
+
+    } catch (IOException e) {
+        e.printStackTrace(); // Imprime el error para depuración
+        return false; // Indica que hubo un error al guardar
     }
+}
 
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) throws IOException {
@@ -284,24 +428,12 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
     }
 
     public static class Evento {
-
-        private String horaInicio;
-        private String horaFinal;
-        private String apellidoPaterno;
-        private String apellidoMaterno;
-        private String nombres;
-        private String rfc;
-        private String sexo;
-        private String departamento;
-        private String puesto;
-        private String nombreEvento;
-        private String nombreFacilitador;
-        private String periodo;
+        private String horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, departamento, puesto, nombreEvento, nombreFacilitador, periodo;
         private BooleanProperty acreditacion;
 
-        public Evento(String horaInicio, String horaFinal, String apellidoPaterno, String apellidoMaterno,
-                String nombres, String rfc, String sexo, String departamento, String puesto,
-                String nombreEvento, String nombreFacilitador, String periodo, Boolean acreditacion) {
+        public Evento(String horaInicio, String horaFinal, String apellidoPaterno, String apellidoMaterno, String nombres, 
+                      String rfc, String sexo, String departamento, String puesto, String nombreEvento, String nombreFacilitador, 
+                      String periodo, Boolean acreditacion) {
             this.horaInicio = horaInicio;
             this.horaFinal = horaFinal;
             this.apellidoPaterno = apellidoPaterno;
@@ -317,6 +449,17 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
             this.acreditacion = new SimpleBooleanProperty(acreditacion);
         }
 
+        public BooleanProperty acreditadoProperty() {
+            return acreditacion;
+        }
+
+        public void setAcreditado(boolean acreditado) {
+            this.acreditacion.set(acreditado);
+        }
+
+        public boolean isAcreditado() {
+            return acreditacion.get();
+        }
         public String getHoraInicio() {
             return horaInicio;
         }
@@ -324,7 +467,6 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
         public String getHoraFinal() {
             return horaFinal;
         }
-
 
         public String getApellidoPaterno() {
             return apellidoPaterno;
@@ -373,69 +515,47 @@ tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
         public void setAcreditacion(Boolean acreditacion) {
             this.acreditacion = new SimpleBooleanProperty(acreditacion);
         }
-        
 
-    public Evento() {
-        this.acreditacion = new SimpleBooleanProperty(false); // Inicialmente no marcado
-    }
-
-    public boolean isAcreditado() {
-        return acreditacion.get();
-    }
-
-    public void setAcreditado(boolean acreditado) {
-        this.acreditacion.set(acreditado);
-    }
-
-    public BooleanProperty acreditadoProperty() {
-        return acreditacion;
-    }
-        
-        
-        
-    }
-
-   public static class ExcelReader {
-
-    public static List<Evento> leerEventosDesdeExcel(String rutaArchivo) throws IOException {
-        List<Evento> eventos = new ArrayList<>();
-        try (FileInputStream archivo = new FileInputStream(rutaArchivo); Workbook workbook = new XSSFWorkbook(archivo)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) {
-                    continue; // Saltar encabezado
-                }
-
-                String horaInicio = getCellValue(row.getCell(1));
-                String horaFinal = getCellValue(row.getCell(2));
-                
-                String apellidoPaterno = getCellValue(row.getCell(4));
-                String apellidoMaterno = getCellValue(row.getCell(5));
-                String nombres = getCellValue(row.getCell(6));
-                String rfc = getCellValue(row.getCell(7));
-                String sexo = getCellValue(row.getCell(8));
-                String departamento = getCellValue(row.getCell(9));
-                String puesto = getCellValue(row.getCell(10));
-                String nombreEvento = getCellValue(row.getCell(11));
-                String nombreFacilitador = getCellValue(row.getCell(12));
-                String periodo = getCellValue(row.getCell(13));
-                
-                // Convertir el valor de acreditación a Boolean
-                String acreditacionTexto = getCellValue(row.getCell(14));
-                Boolean acreditacion = acreditacionTexto.equalsIgnoreCase("Sí")|| acreditacionTexto.equals("true") || acreditacionTexto.equals("1");
-
-                // Crear el objeto Evento con el valor Booleano de acreditación
-                eventos.add(new Evento(horaInicio, horaFinal, apellidoPaterno, apellidoMaterno,
-                        nombres, rfc, sexo, departamento, puesto, nombreEvento,
-                        nombreFacilitador, periodo, acreditacion));
-            }
+        public Evento() {
+            this.acreditacion = new SimpleBooleanProperty(false); // Inicialmente no marcado
         }
-        return eventos;
+
+       
+
     }
 
-    private static String getCellValue(Cell cell) {
-        return cell != null ? cell.toString() : "";
+    public static class ExcelReader {
+        public static List<Evento> leerEventosDesdeExcel(String rutaArchivo) throws IOException {
+            List<Evento> eventos = new ArrayList<>();
+            try (FileInputStream archivo = new FileInputStream(rutaArchivo); Workbook workbook = new XSSFWorkbook(archivo)) {
+                Sheet sheet = workbook.getSheetAt(0);
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) continue;
+
+                    String horaInicio = getCellValue(row.getCell(1));
+                    String horaFinal = getCellValue(row.getCell(2));
+                    String apellidoPaterno = getCellValue(row.getCell(4));
+                    String apellidoMaterno = getCellValue(row.getCell(5));
+                    String nombres = getCellValue(row.getCell(6));
+                    String rfc = getCellValue(row.getCell(7));
+                    String sexo = getCellValue(row.getCell(8));
+                    String departamento = getCellValue(row.getCell(9));
+                    String puesto = getCellValue(row.getCell(10));
+                    String nombreEvento = getCellValue(row.getCell(11));
+                    String nombreFacilitador = getCellValue(row.getCell(12));
+                    String periodo = getCellValue(row.getCell(13));
+                    Boolean acreditacion = "Sí".equalsIgnoreCase(getCellValue(row.getCell(14)));
+
+                    eventos.add(new Evento(horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, 
+                                           departamento, puesto, nombreEvento, nombreFacilitador, periodo, acreditacion));
+                }
+            }
+            return eventos;
+        }
+
+        private static String getCellValue(Cell cell) {
+            return cell != null ? cell.toString() : "";
+        }
     }
-}
 
 }

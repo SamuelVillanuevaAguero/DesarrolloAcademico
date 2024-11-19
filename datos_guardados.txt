@@ -1,9 +1,31 @@
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
-Ejemplo de dato guardado
+HoraInicio,HoraFinal,ApellidoPaterno,ApellidoMaterno,Nombres,RFC,Sexo,Departamento,Puesto,NombreEvento,NombreFacilitador,Periodo,Acreditacion
+09-nov-2024,09-nov-2024,Cruz,Torres,Ana,TOAA860817,Mujer,Ciencias Económico Administrativo,Jefatura,4. Taller de sueldos y salarios,4. Jesús Manso Espín,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Cruz,Torres,Ana,TOAA860817,Mujer,Ciencias Económico Administrativo,Jefatura,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Cruz,Torres,Ana,TOAA860817,Mujer,Ciencias Económico Administrativo,Jefatura,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Ramírez,Andrés,RAMA740512,Hombre,Sistemas Computacionales,Base,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Ramírez,Andrés,RAMA740512,Hombre,Sistemas Computacionales,Base,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Ramírez,Andrés,RAMA740512,Hombre,Sistemas Computacionales,Base,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Ramírez,Gómez,Carlos,GORC780623,Hombre,Sistemas Computacionales,Base,8. Diseños por sismos normatividad 2023,8. Nicolás Domínguez Reyes,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Ramírez,Gómez,Carlos,GORC780623,Hombre,Sistemas Computacionales,Base,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Ramírez,Gómez,Carlos,GORC780623,Hombre,Sistemas Computacionales,Base,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Pérez,Juan,PEJL900101,Hombre,Química y Bioquímica,Base,8. Diseños por sismos normatividad 2023,8. Nicolás Domínguez Reyes,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Pérez,Juan,PEJL900101,Hombre,Sistemas Computacionales,Base,4. Taller de sueldos y salarios,4. Jesús Manso Espín,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Pérez,Juan,PEJL900101,Hombre,Sistemas Computacionales,Base,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Díaz,Martínez,Luis,MALI750210,Hombre,Ingeniería Industrial,Base,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Díaz,Martínez,Luis,MALI750210,Hombre,Ingeniería Industrial,Base,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Díaz,Martínez,Luis,MALI750210,Hombre,Ciencias Económico Administrativo,Base,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Sánchez,Rodríguez,María,ROSM820512,Mujer,Ciencias Básicas,Interinato,8. Diseños por sismos normatividad 2023,8. Nicolás Domínguez Reyes,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Sánchez,Rodríguez,María,ROSM820512,Mujer,Ciencias Económico Administrativo,Interinato,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Sánchez,Rodríguez,María,ROSM820512,Mujer,Ciencias Básicas,Interinato,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Fernández,Miguel,FEMI820213,Hombre,Ciencias Básicas,Base,4. Taller de sueldos y salarios,4. Jesús Manso Espín,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Fernández,Miguel,FEMI820213,Hombre,Ciencias Básicas,Base,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Martínez,Fernández,Miguel,FEMI820213,Hombre,Ciencias Básicas,Base,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Vargas,Herrera,Sofía,HEES900405,Mujer,Química y Bioquímica,Interinato,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Vargas,Herrera,Sofía,HEES900405,Mujer,Química y Bioquímica,Interinato,8. Diseños por sismos normatividad 2023,8. Nicolás Domínguez Reyes,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Vargas,Herrera,Sofía,HEES900405,Mujer,Química y Bioquímica,Interinato,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Ruiz,Teresa,RULT780316,Mujer,Ciencias Básicas,Jefatura,8. Diseños por sismos normatividad 2023,8. Nicolás Domínguez Reyes,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Ruiz,Teresa,RULT780316,Mujer,Ciencias Básicas,Jefatura,6. Matemáticas con GeoGebra y Desmos,6.  Ignacio González Espinosa,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,López,Ruiz,Teresa,RULT780316,Mujer,Ciencias Básicas,Jefatura,5. Gestión ágil de proyectos de software,5. Zaira Oliva Campo Delgado,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Castro,Jiménez,Valeria,JICV890623,Mujer,Ciencias Económico Administrativo,Interinato,4. Taller de sueldos y salarios,4. Jesús Manso Espín,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Castro,Jiménez,Valeria,JICV890623,Mujer,Ciencias Económico Administrativo,Interinato,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
+09-nov-2024,09-nov-2024,Castro,Jiménez,Valeria,JICV890623,Mujer,Ciencias Económico Administrativo,Interinato,7. Inglés básico,7. Daniel Mulato Agüero,Del 05 al 09 de agosto,No acreditó
