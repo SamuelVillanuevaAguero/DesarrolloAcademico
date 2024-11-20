@@ -10,10 +10,11 @@ public class filaDato {
     private String departamentoLicenciatura;
     private String departamentoPosgrado;
     private String acreditado;
+    private String tipoCapacitacion;
     private int noCursos;
 
     public filaDato(int año, String periodo, String nombre, String apellidoPaterno, String apellidoMaterno, 
-                    String departamentoLicenciatura, String departamentoPosgrado, String acreditado, int noCursos) {
+                    String departamentoLicenciatura, String departamentoPosgrado, String acreditado, String tipoCapacitacion, int noCursos) {
         this.año = año;
         this.periodo = periodo;
         this.nombre = nombre;
@@ -22,6 +23,7 @@ public class filaDato {
         this.departamentoLicenciatura = departamentoLicenciatura;
         this.departamentoPosgrado = departamentoPosgrado;
         this.acreditado = acreditado;
+        this.tipoCapacitacion = tipoCapacitacion;
         this.noCursos = noCursos;
     }
 
@@ -51,4 +53,7 @@ public class filaDato {
 
     public int getNoCursos() { return noCursos; }
     public void setNoCursos(int noCursos) { this.noCursos = noCursos; }
+    
+    public String getTipoCapacitacion(){ return this.tipoCapacitacion;}
+    public void setTipoCapacitacion(String tipoCapacitacion){this.tipoCapacitacion = tipoCapacitacion;}
 }
