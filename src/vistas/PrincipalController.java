@@ -4,6 +4,7 @@
  */
 package vistas;
 
+import utilerias.principal.Necesidadcapacitacion;
 import javafx.scene.layout.VBox;
 import org.apache.poi.ss.usermodel.*;
 import java.io.File;
@@ -81,7 +82,11 @@ public class PrincipalController implements Initializable {
     @FXML
     private ScrollPane scrollBox;
 
-   
+    @FXML
+    private ImageView notiAlert;
+
+    @FXML
+    private ImageView reloadNotis;
 
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) throws IOException {
@@ -95,7 +100,6 @@ public class PrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-
         generarNotificacionesEnVBox();
         botonCerrar.setOnMouseClicked(event -> {
             try {
@@ -162,32 +166,11 @@ public class PrincipalController implements Initializable {
         });
 
         // Ruta del archivo Excel
-        String rutaArchivo = "C:\\Users\\sebas\\OneDrive\\Escritorio\\Prueba.xlsx";
+        String rutaArchivo = "C:\\Users\\sebas\\OneDrive\\Escritorio\\Arhicvos Prueba\\Gestion_de_curso\\Archivos_importados\\Año\\Periodo\\docentesRecomendable.xlsx";
 
         // Leer docentes que necesitan capacitación
         List<Docente> docentes = leerDocentesConNecesidadDeCapacitacion(rutaArchivo);
 
-        // VBox para contener las notificaciones
-        /*
-              VBox notificationBox = new VBox(15);  // Espacio de 5px entre notificaciones
-        notificationPane.getChildren().add(notificationBox);
-
-        // Crear etiquetas de notificación para cada docente
-        for (Docente docente : docentes) {
-            String mensaje = docente.nombre + "\nnecesita capacitación en ";
-
-            if (docente.necesitaCapacitacionFP && docente.necesitaCapacitacionAD) {
-                mensaje += "FP y AD";
-            } else if (docente.necesitaCapacitacionFP) {
-                mensaje += "FP";
-            } else if (docente.necesitaCapacitacionAD) {
-                mensaje += "AD";
-            }
-
-            // Crear y añadir la etiqueta de notificación
-            Label notificationLabel = new Label(mensaje);
-            notificationBox.getChildren().add(notificationLabel);
-        } */
         // Configurar el botón de notificación para mostrar el `notificationPane`
         notification.setOnMouseClicked(event -> {
             notificationPane.setVisible(true);
@@ -200,6 +183,11 @@ public class PrincipalController implements Initializable {
 
         // Ocultar el panel inicialmente
         notificationPane.setVisible(false);
+
+        reloadNotis.setOnMouseClicked(event -> {
+            generarNotis();
+            System.out.println("Generacion de archivo para notis");
+        });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,43 +205,61 @@ public class PrincipalController implements Initializable {
             this.necesitaCapacitacionFP = necesitaFP;
             this.necesitaCapacitacionAD = necesitaAD;
         }
+
     }
 
     //
+    // Leer listado_de_necesidad_de_acreditacion con las columnas A, B y C
     public static List<Docente> leerDocentesConNecesidadDeCapacitacion(String rutaArchivo) {
         List<Docente> docentes = new ArrayList<>();
 
-        try (FileInputStream fis = new FileInputStream(new File(rutaArchivo)); Workbook workbook = new XSSFWorkbook(fis)) {
+        // Verificar si el archivo existe antes de intentar leerlo
+        File archivo = new File(rutaArchivo);
+        if (!archivo.exists()) {
+            System.out.println("El archivo especificado no existe: " + rutaArchivo); // Mensaje en consola
+            // Alternativamente, puedes usar un sistema de notificaciones visual
+            // o simplemente manejarlo con un log
+            return docentes; // Retornar lista vacía si el archivo no existe
+        }
 
+        // Intentar leer el archivo si existe
+        try (FileInputStream fis = new FileInputStream(archivo); Workbook workbook = new XSSFWorkbook(fis)) {
             Sheet sheet = workbook.getSheetAt(0); // Leer la primera hoja
-            for (Row row : sheet) {
-                // Leer el nombre del docente en la columna A
+
+            // Iterar desde la segunda fila (índice 1) para omitir los encabezados
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue; // Saltar filas vacías
+                }
+                // Leer el nombre del docente en la columna A (índice 0)
                 Cell nombreCell = row.getCell(0); // Columna A
-                Cell fpCell = row.getCell(2);     // Columna C (FP)
-                Cell adCell = row.getCell(3);     // Columna D (AD)
+                Cell fpCell = row.getCell(1);     // Columna B (FP)
+                Cell adCell = row.getCell(2);     // Columna C (AD)
 
-                // Validar que las celdas no sean nulas antes de acceder a sus valores
-                if (nombreCell != null && fpCell != null && adCell != null) {
-                    String nombre = nombreCell.toString(); // Obtener valor como String
-                    boolean necesitaFP = "Recomendable".equalsIgnoreCase(fpCell.toString().trim());
-                    boolean necesitaAD = "Recomendable".equalsIgnoreCase(adCell.toString().trim());
+                // Validar que la celda del nombre no sea nula
+                if (nombreCell != null) {
+                    String nombre = nombreCell.toString().trim(); // Obtener valor como String
 
-                    // Agregar solo si se necesita alguna capacitación
-                    if (necesitaFP || necesitaAD) {
-                        docentes.add(new Docente(nombre, necesitaFP, necesitaAD));
-                    }
+                    // Validar FP y AD, asignando "Recomendable" solo si coincide
+                    boolean necesitaFP = fpCell != null && "Recomendable".equalsIgnoreCase(fpCell.toString().trim());
+                    boolean necesitaAD = adCell != null && "Recomendable".equalsIgnoreCase(adCell.toString().trim());
+
+                    // Agregar solo si se tiene un nombre válido
+                    docentes.add(new Docente(nombre, necesitaFP, necesitaAD));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // Manejar cualquier otro error que pueda ocurrir durante la lectura
+            System.out.println("Error al leer el archivo: " + e.getMessage());
         }
 
         return docentes;
     }
-    // Método para leer los datos de docentes y generar las notificaciones en HBox
 
+    // Método para leer los datos de docentes y generar las notificaciones en VBox
     public void generarNotificacionesEnVBox() {
-        String rutaArchivo = "C:\\Users\\sebas\\OneDrive\\Escritorio\\Prueba.xlsx";
+        String rutaArchivo = "C:\\Users\\sebas\\OneDrive\\Escritorio\\Arhicvos Prueba\\Gestion_de_curso\\Archivos_importados\\Año\\Periodo\\docentesRecomendable.xlsx";
         List<Docente> docentesN = leerDocentesConNecesidadDeCapacitacion(rutaArchivo);
 
         // Limpiar el VBox antes de agregar nuevas notificaciones (para evitar duplicados si se llama varias veces)
@@ -261,6 +267,11 @@ public class PrincipalController implements Initializable {
 
         // Crear una entrada de notificación para cada docente
         for (Docente docente : docentesN) {
+            // **Condición para ignorar docentes sin "Recomendable" en FP o AD**
+            if (!docente.necesitaCapacitacionFP && !docente.necesitaCapacitacionAD) {
+                continue; // Saltar este docente
+            }
+
             // Crear un VBox para el docente, donde se mostrarán el nombre y las necesidades de capacitación
             VBox docenteBox = new VBox();
             docenteBox.setSpacing(3); // Espacio entre elementos en el VBox
@@ -288,19 +299,39 @@ public class PrincipalController implements Initializable {
             // Añadir el VBox del docente al contenedor principal
             notificacioneBox.getChildren().add(docenteBox);
         }
+
+        // Ajustar altura del contenedor según el número de nodos
         notificacioneBox.setPrefHeight(Control.USE_COMPUTED_SIZE);
         notificacioneBox.requestLayout();
 
+        // Obtener el número total de nodos dentro del VBox `notificacioneBox`
+        int totalNodos = notificacioneBox.getChildren().size();
+
+        // Condición para mostrar el `imageView` (icono de notificación)
+        if (totalNodos >= 1) {
+            notiAlert.setVisible(true);
+        } else {
+            notiAlert.setVisible(false);
+        }
+
         // Ajustes del ScrollPane para desplazarse verticalmente
-        //scrollBox.setContent(notificacioneBox); // Asegúrate de que `notificacionesBox` esté dentro del `ScrollPane`
+        scrollBox.setContent(notificacioneBox); // Asegúrate de que `notificacioneBox` esté dentro del `ScrollPane`
         scrollBox.setFitToWidth(true); // Ajustar el ancho del contenido al `ScrollPane`
         scrollBox.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // No permitir desplazamiento horizontal
         scrollBox.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Mostrar barra de desplazamiento vertical según sea necesario
         scrollBox.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
     }
 
-    
-
+    public void generarNotis() {
+        try {
+            Necesidadcapacitacion necesidadCapacitacion = new Necesidadcapacitacion();
+            necesidadCapacitacion.generarArchivo();
+            System.out.println("Generación de archivo para notificaciones completada.");
+            generarNotificacionesEnVBox();
+        } catch (IOException e) {
+            System.err.println("Error al generar el archivo: " + e.getMessage());
+        }
+    }
 
 }// FIN PrincipalController
+
