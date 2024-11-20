@@ -16,13 +16,25 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import utilerias.general.ControladorGeneral;
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
 /**
  * FXML Controller class
@@ -170,8 +182,35 @@ public class ExportacionReconocimientosController implements Initializable {
     }
 
     @FXML
-    private void exportarReconocimientos(ActionEvent event) {
-        System.out.println("Función exportarReconocimientos ejecutada.");
+    private void exportarReconocimientos(ActionEvent event) throws IOException {
+         ExcelReader excelReader = new ExcelReader();
+    List<String> nombresDocentes = excelReader.obtenerNombresCompletos(); // Lista de docentes
+
+    String rutaPlantilla = "C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/FORMATO-RECONOCIMIENTO-JUNIO-2024 (1).docx";
+    String directorioSalida = "C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/Exportaciones/";
+    String horasCurso = txtHoras.getValue(); // Horas del curso
+    String formatoSeleccionado = txtFormatos.getValue(); // Formato: PDF, Word o Ambos
+
+    if (nombresDocentes.isEmpty() || horasCurso == null || formatoSeleccionado == null) {
+        Alert alerta = new Alert(Alert.AlertType.WARNING, "Por favor, asegúrate de que los datos del curso y los nombres estén completos.");
+        alerta.showAndWait();
+        return;
+    }
+
+    for (String nombreDocente : nombresDocentes) {
+        Map<String, String> datosReconocimiento = new HashMap<>();
+        datosReconocimiento.put("NOMBRE_COMPLETO", nombreDocente);
+        datosReconocimiento.put("HORAS_CURSO", horasCurso);
+        String archivoWordGenerado = generarDocumentoWord(rutaPlantilla, directorioSalida, datosReconocimiento, nombreDocente);
+        if (formatoSeleccionado.equals("PDF") || formatoSeleccionado.equals("Ambos")) {
+            convertirWordAPDF(archivoWordGenerado);
+        }
+        System.out.println("Reconocimiento generado para: " + nombreDocente);
+    }
+
+    Alert exito = new Alert(Alert.AlertType.INFORMATION, "¡Reconocimientos exportados con éxito!");
+    exito.showAndWait();
+
     }
 
     @FXML
@@ -248,12 +287,153 @@ public class ExportacionReconocimientosController implements Initializable {
 
     @FXML
     private void RedireccionarArchivos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ImportacionArchivos.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) buttonRedireccionar.getScene().getWindow(); // Obtener la ventana actual
+            stage.setScene(new Scene(root)); // Mostrar la nueva escena
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    private String generarDocumentoWord(String rutaPlantilla, String directorioSalida, Map<String, String> datos, String nombreArchivo) throws IOException {
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        XWPFDocument documento = null;
+
+         try {
+        // Abrir la plantilla
+        fis = new FileInputStream(rutaPlantilla);
+        documento = new XWPFDocument(fis);
+
+        // Reemplazar marcadores en los párrafos
+        for (XWPFParagraph parrafo : documento.getParagraphs()) {
+            reemplazarMarcadoresEnParrafo(parrafo, datos);
+        }
+
+        // Reemplazar marcadores en las tablas
+        for (XWPFTable tabla : documento.getTables()) {
+            for (XWPFTableRow fila : tabla.getRows()) {
+                for (XWPFTableCell celda : fila.getTableCells()) {
+                    for (XWPFParagraph parrafo : celda.getParagraphs()) {
+                        reemplazarMarcadoresEnParrafo(parrafo, datos);
+                    }
+                }
+            }
+        }
+
+        // Guardar el archivo generado
+        String rutaArchivoGenerado = directorioSalida + "Reconocimiento_" + datos.get("nombreDocente") + ".docx";
+        fos = new FileOutputStream(rutaArchivoGenerado);
+        documento.write(fos);
+
+        return rutaArchivoGenerado; // Devolver la ruta del archivo generado
+    } finally {
+        // Cerrar recursos manualmente
+        if (fos != null) {
+            fos.close();
+        }
+        if (fis != null) {
+            fis.close();
+        }
+    }
+    }
+    
+    private void reemplazarMarcadoresEnParrafo(XWPFParagraph parrafo, Map<String, String> datos) {
+    List<XWPFRun> runs = parrafo.getRuns();
+    if (runs != null) {
+        for (XWPFRun run : runs) {
+            String texto = run.getText(0);
+            if (texto != null) {
+                // Reemplazar cada marcador en el texto
+                for (Map.Entry<String, String> entrada : datos.entrySet()) {
+                    String marcador = "{" + entrada.getKey() + "}";
+                    if (texto.contains(marcador)) {
+                        texto = texto.replace(marcador, entrada.getValue());
+                    }
+                }
+                run.setText(texto, 0); // Actualizar el texto en el run
+            }
+        }
+    }
+}
+
+// Método para convertir un archivo Word a PDF
+    private String convertirWordAPDF(String rutaArchivoWord) {
+        String rutaArchivoPDF = rutaArchivoWord.replace(".docx", ".pdf");
+
+        try (FileInputStream fis = new FileInputStream(rutaArchivoWord); FileOutputStream fos = new FileOutputStream(rutaArchivoPDF)) {
+
+            // Cargar el documento Word
+            XWPFDocument documentoWord = new XWPFDocument(fis);
+
+            // Crear un buffer para almacenar el contenido del archivo Word
+            StringBuilder contenidoWord = new StringBuilder();
+
+            // Leer y concatenar los párrafos del documento Word
+            for (XWPFParagraph parrafo : documentoWord.getParagraphs()) {
+                contenidoWord.append(parrafo.getText()).append("\n");
+            }
+
+            // Crear un PDF básico (manual) escribiendo el texto como un archivo plano
+            try (PrintWriter escritorPDF = new PrintWriter(fos)) {
+                escritorPDF.println(contenidoWord.toString());
+            }
+
+            return rutaArchivoPDF;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert error = new Alert(Alert.AlertType.ERROR, "Error al convertir el documento a PDF: " + e.getMessage());
+            error.showAndWait();
+            return null;
+        }
+    }
+        
 
     class ExcelReader {
 
         private static final String ETIQUETAS_PATH = "C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/Etiquetas_Cursos_2024.xlsx";
         private static final String PROG_INSTITUCIONAL_PATH = "C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/PROG-INSTITUCIONAL-ENERO-2023.xlsx";
+
+        private static final String NUEVO_EXCEL_PATH = "C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/EjemploDeExportacion.xlsx";
+
+        // Método para obtener nombres completos del nuevo Excel
+        public List<String> obtenerNombresCompletos() throws IOException {
+            List<String> nombresCompletos = new ArrayList<>();
+
+            try (FileInputStream fis = new FileInputStream(NUEVO_EXCEL_PATH); Workbook workbook = new XSSFWorkbook(fis)) {
+                Sheet sheet = workbook.getSheetAt(0); // Asume que está en la primera hoja
+
+                for (Row row : sheet) {
+                    // Omite las filas de encabezado si es necesario
+                    if (row.getRowNum() == 0) {
+                        continue;
+                    }
+
+                    // Leer las columnas necesarias
+                    org.apache.poi.ss.usermodel.Cell nombreCell = row.getCell(0); // Columna "nombre"
+                    org.apache.poi.ss.usermodel.Cell apellido1Cell = row.getCell(1); // Columna "apellido1"
+                    org.apache.poi.ss.usermodel.Cell apellido2Cell = row.getCell(2); // Columna "apellido2"
+
+                    // Validar que las celdas no sean nulas y construir el nombre completo
+                    if (nombreCell != null && apellido1Cell != null && apellido2Cell != null) {
+                        String nombre = nombreCell.getStringCellValue();
+                        String apellido1 = apellido1Cell.getStringCellValue();
+                        String apellido2 = apellido2Cell.getStringCellValue();
+
+                        // Construir y agregar el nombre completo a la lista
+                        String nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
+                        nombresCompletos.add(nombreCompleto);
+                    }
+                }
+            }
+
+            return nombresCompletos;
+        }
 
         // Método para buscar Nombre del curso en el archivo "Etiquetas"
         public String buscarCurso(String codigoCurso) throws IOException {
