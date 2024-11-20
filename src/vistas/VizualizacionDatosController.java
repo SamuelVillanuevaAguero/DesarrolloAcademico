@@ -85,7 +85,7 @@ public class VizualizacionDatosController implements Initializable {
         cargarDatos();
     }
 
-     private void configurarTabla() {
+    private void configurarTabla() {
         TableColumn<Evento, String> colHoraInicio = new TableColumn<>("Fecha de Inicio");
         colHoraInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
 
@@ -131,82 +131,77 @@ public class VizualizacionDatosController implements Initializable {
                 colPuesto, colNombreEvento, colNombreFacilitador, colPeriodo, colAcreditacion);
     }
 
-private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCellFactory() {
-    return param -> new TableCell<>() {
-        private final Button btnAcredita = new Button();
-        private final Button btnNoAcredita = new Button();
+    private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCellFactory() {
+        return param -> new TableCell<>() {
+            private final Button btnAcredita = new Button();
+            private final Button btnNoAcredita = new Button();
 
-        {
-            // Cargar las imágenes desde los recursos
-            Image imagePalomita = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png"));
-            Image imageTacha = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png"));
+            {
+                // Cargar las imágenes desde los recursos
+                Image imagePalomita = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png"));
+                Image imageTacha = new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png"));
 
-            // Crear ImageView para redimensionar las imágenes
-            ImageView iconPalomita = new ImageView(imagePalomita);
-            iconPalomita.setFitWidth(16); // Ancho del ícono
-            iconPalomita.setFitHeight(16); // Alto del ícono
+                // Crear ImageView para redimensionar las imágenes
+                ImageView iconPalomita = new ImageView(imagePalomita);
+                iconPalomita.setFitWidth(16); // Ancho del ícono
+                iconPalomita.setFitHeight(16); // Alto del ícono
 
-            ImageView iconTacha = new ImageView(imageTacha);
-            iconTacha.setFitWidth(16); // Ancho del ícono
-            iconTacha.setFitHeight(16); // Alto del ícono
+                ImageView iconTacha = new ImageView(imageTacha);
+                iconTacha.setFitWidth(16); // Ancho del ícono
+                iconTacha.setFitHeight(16); // Alto del ícono
 
-            // Asignar los íconos redimensionados a los botones
-            btnAcredita.setGraphic(iconPalomita);
-            btnNoAcredita.setGraphic(iconTacha);
-
-            // Configurar acciones de los botones
-            btnAcredita.setOnAction(event -> {
-                Evento evento = getTableView().getItems().get(getIndex());
-                evento.setAcreditado(true);
-                updateButtons(evento); // Actualiza la interfaz
-            });
-
-            btnNoAcredita.setOnAction(event -> {
-                Evento evento = getTableView().getItems().get(getIndex());
-                evento.setAcreditado(false);
-                updateButtons(evento); // Actualiza la interfaz
-            });
-        }
-
-        private void updateButtons(Evento evento) {
-            // Cambia los gráficos de los botones según el estado
-            if (evento.isAcreditado()) {
-                ImageView iconPalomita = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png")));
-                iconPalomita.setFitWidth(16);
-                iconPalomita.setFitHeight(16);
+                // Asignar los íconos redimensionados a los botones
                 btnAcredita.setGraphic(iconPalomita);
-                btnNoAcredita.setGraphic(null); // Ocultar el botón de tacha
-            } else {
-                ImageView iconTacha = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png")));
-                iconTacha.setFitWidth(16);
-                iconTacha.setFitHeight(16);
                 btnNoAcredita.setGraphic(iconTacha);
-                btnAcredita.setGraphic(null); // Ocultar el botón de palomita
+
+                // Configurar acciones de los botones
+                btnAcredita.setOnAction(event -> {
+                    Evento evento = getTableView().getItems().get(getIndex());
+                    evento.setAcreditado(true);
+                    updateButtons(evento); // Actualiza la interfaz
+                });
+
+                btnNoAcredita.setOnAction(event -> {
+                    Evento evento = getTableView().getItems().get(getIndex());
+                    evento.setAcreditado(false);
+                    updateButtons(evento); // Actualiza la interfaz
+                });
             }
-        }
 
-        @Override
-        protected void updateItem(Void item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty) {
-                setGraphic(null);
-            } else {
-                Evento evento = getTableView().getItems().get(getIndex());
-                updateButtons(evento);
-
-                // Organizar los botones en un VBox para alineación vertical
-                VBox vbox = new VBox(btnAcredita, btnNoAcredita);
-                vbox.setSpacing(5);
-                setGraphic(vbox);
+            private void updateButtons(Evento evento) {
+                // Cambia los gráficos de los botones según el estado
+                if (evento.isAcreditado()) {
+                    ImageView iconPalomita = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Palomita.png")));
+                    iconPalomita.setFitWidth(16);
+                    iconPalomita.setFitHeight(16);
+                    btnAcredita.setGraphic(iconPalomita);
+                    btnNoAcredita.setGraphic(null); // Ocultar el botón de tacha
+                } else {
+                    ImageView iconTacha = new ImageView(new Image(getClass().getResourceAsStream("/utilerias/visualizacionDatos/Tacha.png")));
+                    iconTacha.setFitWidth(16);
+                    iconTacha.setFitHeight(16);
+                    btnNoAcredita.setGraphic(iconTacha);
+                    btnAcredita.setGraphic(null); // Ocultar el botón de palomita
+                }
             }
-        }
-    };
-}
 
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Evento evento = getTableView().getItems().get(getIndex());
+                    updateButtons(evento);
 
-
-    
-
+                    // Organizar los botones en un VBox para alineación vertical
+                    VBox vbox = new VBox(btnAcredita, btnNoAcredita);
+                    vbox.setSpacing(5);
+                    setGraphic(vbox);
+                }
+            }
+        };
+    }
 
     private void cargarDatos() {
         try {
@@ -253,7 +248,7 @@ private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCe
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-    
+
     @FXML
     private void Buscar(ActionEvent event) {
         String textoBusqueda = campoBusqueda.getText().trim().toLowerCase();
@@ -304,7 +299,6 @@ private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCe
         campoBusqueda.clear();
     }
 
-  
     @FXML
     private void actuzalizar(ActionEvent event) {
         try {
@@ -333,86 +327,86 @@ private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCe
         }
     }
 
-   @FXML
-private void guardar(ActionEvent event) {
-    // Lógica para guardar los datos
-    boolean guardadoExitoso = guardarDatos();
+    @FXML
+    private void guardar(ActionEvent event) {
+        // Lógica para guardar los datos
+        boolean guardadoExitoso = guardarDatos();
 
-    // Mostrar mensaje de confirmación si se guarda correctamente
-    if (guardadoExitoso) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Confirmación de Guardado");
-        alert.setHeaderText(null);
-        alert.setContentText("Los datos han sido guardados correctamente.");
-        alert.showAndWait();
-    } else {
-        // Mostrar mensaje de error en caso de falla
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error al Guardar");
-        alert.setHeaderText(null);
-        alert.setContentText("Hubo un error al guardar los datos.");
-        alert.showAndWait();
+        // Mostrar mensaje de confirmación si se guarda correctamente
+        if (guardadoExitoso) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Confirmación de Guardado");
+            alert.setHeaderText(null);
+            alert.setContentText("Los datos han sido guardados correctamente.");
+            alert.showAndWait();
+        } else {
+            // Mostrar mensaje de error en caso de falla
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error al Guardar");
+            alert.setHeaderText(null);
+            alert.setContentText("Hubo un error al guardar los datos.");
+            alert.showAndWait();
+        }
     }
-}
 
-private boolean guardarDatos() {
-    try {
-        // Crear un libro de Excel
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Datos");
+    private boolean guardarDatos() {
+        try {
+            // Crear un libro de Excel
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Datos");
 
-        // Crear una fila de encabezados
-        Row headerRow = sheet.createRow(0);
-        String[] columnas = {
-            "HoraInicio", "HoraFinal", "ApellidoPaterno", "ApellidoMaterno", "Nombres",
-            "RFC", "Sexo", "Departamento", "Puesto", "NombreEvento",
-            "NombreFacilitador", "Periodo", "Acreditación"
-        };
+            // Crear una fila de encabezados
+            Row headerRow = sheet.createRow(0);
+            String[] columnas = {
+                "HoraInicio", "HoraFinal", "ApellidoPaterno", "ApellidoMaterno", "Nombres",
+                "RFC", "Sexo", "Departamento", "Puesto", "NombreEvento",
+                "NombreFacilitador", "Periodo", "Acreditación"
+            };
 
-        // Añadir encabezados a la fila
-        for (int i = 0; i < columnas.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columnas[i]);
+            // Añadir encabezados a la fila
+            for (int i = 0; i < columnas.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columnas[i]);
+            }
+
+            // Añadir datos desde el TableView
+            int rowIndex = 1; // Empezar en la segunda fila
+            for (Evento evento : tableView.getItems()) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(evento.getHoraInicio());
+                row.createCell(1).setCellValue(evento.getHoraFinal());
+                row.createCell(2).setCellValue(evento.getApellidoPaterno());
+                row.createCell(3).setCellValue(evento.getApellidoMaterno());
+                row.createCell(4).setCellValue(evento.getNombres());
+                row.createCell(5).setCellValue(evento.getRfc());
+                row.createCell(6).setCellValue(evento.getSexo());
+                row.createCell(7).setCellValue(evento.getDepartamento());
+                row.createCell(8).setCellValue(evento.getPuesto());
+                row.createCell(9).setCellValue(evento.getNombreEvento());
+                row.createCell(10).setCellValue(evento.getNombreFacilitador());
+                row.createCell(11).setCellValue(evento.getPeriodo());
+                row.createCell(12).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
+            }
+
+            // Autoajustar el ancho de las columnas
+            for (int i = 0; i < columnas.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Guardar el archivo en C:\excel\datos_guardados.xlsx
+            String filePath = "C:/excel/datos_guardados.xlsx";
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                workbook.write(fileOut);
+            }
+
+            workbook.close();
+            return true; // Indica que se guardó correctamente
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Imprime el error para depuración
+            return false; // Indica que hubo un error al guardar
         }
-
-        // Añadir datos desde el TableView
-        int rowIndex = 1; // Empezar en la segunda fila
-        for (Evento evento : tableView.getItems()) {
-            Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(evento.getHoraInicio());
-            row.createCell(1).setCellValue(evento.getHoraFinal());
-            row.createCell(2).setCellValue(evento.getApellidoPaterno());
-            row.createCell(3).setCellValue(evento.getApellidoMaterno());
-            row.createCell(4).setCellValue(evento.getNombres());
-            row.createCell(5).setCellValue(evento.getRfc());
-            row.createCell(6).setCellValue(evento.getSexo());
-            row.createCell(7).setCellValue(evento.getDepartamento());
-            row.createCell(8).setCellValue(evento.getPuesto());
-            row.createCell(9).setCellValue(evento.getNombreEvento());
-            row.createCell(10).setCellValue(evento.getNombreFacilitador());
-            row.createCell(11).setCellValue(evento.getPeriodo());
-            row.createCell(12).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
-        }
-
-        // Autoajustar el ancho de las columnas
-        for (int i = 0; i < columnas.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
-
-        // Guardar el archivo en C:\excel\datos_guardados.xlsx
-        String filePath = "C:/excel/datos_guardados.xlsx";
-        try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-            workbook.write(fileOut);
-        }
-
-        workbook.close();
-        return true; // Indica que se guardó correctamente
-
-    } catch (IOException e) {
-        e.printStackTrace(); // Imprime el error para depuración
-        return false; // Indica que hubo un error al guardar
     }
-}
 
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) throws IOException {
@@ -428,12 +422,13 @@ private boolean guardarDatos() {
     }
 
     public static class Evento {
+
         private String horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, departamento, puesto, nombreEvento, nombreFacilitador, periodo;
         private BooleanProperty acreditacion;
 
-        public Evento(String horaInicio, String horaFinal, String apellidoPaterno, String apellidoMaterno, String nombres, 
-                      String rfc, String sexo, String departamento, String puesto, String nombreEvento, String nombreFacilitador, 
-                      String periodo, Boolean acreditacion) {
+        public Evento(String horaInicio, String horaFinal, String apellidoPaterno, String apellidoMaterno, String nombres,
+                String rfc, String sexo, String departamento, String puesto, String nombreEvento, String nombreFacilitador,
+                String periodo, Boolean acreditacion) {
             this.horaInicio = horaInicio;
             this.horaFinal = horaFinal;
             this.apellidoPaterno = apellidoPaterno;
@@ -460,6 +455,7 @@ private boolean guardarDatos() {
         public boolean isAcreditado() {
             return acreditacion.get();
         }
+
         public String getHoraInicio() {
             return horaInicio;
         }
@@ -520,17 +516,18 @@ private boolean guardarDatos() {
             this.acreditacion = new SimpleBooleanProperty(false); // Inicialmente no marcado
         }
 
-       
-
     }
 
     public static class ExcelReader {
+
         public static List<Evento> leerEventosDesdeExcel(String rutaArchivo) throws IOException {
             List<Evento> eventos = new ArrayList<>();
             try (FileInputStream archivo = new FileInputStream(rutaArchivo); Workbook workbook = new XSSFWorkbook(archivo)) {
                 Sheet sheet = workbook.getSheetAt(0);
                 for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue;
+                    if (row.getRowNum() == 0) {
+                        continue;
+                    }
 
                     String horaInicio = getCellValue(row.getCell(1));
                     String horaFinal = getCellValue(row.getCell(2));
@@ -546,8 +543,8 @@ private boolean guardarDatos() {
                     String periodo = getCellValue(row.getCell(13));
                     Boolean acreditacion = "Sí".equalsIgnoreCase(getCellValue(row.getCell(14)));
 
-                    eventos.add(new Evento(horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, 
-                                           departamento, puesto, nombreEvento, nombreFacilitador, periodo, acreditacion));
+                    eventos.add(new Evento(horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo,
+                            departamento, puesto, nombreEvento, nombreFacilitador, periodo, acreditacion));
                 }
             }
             return eventos;
