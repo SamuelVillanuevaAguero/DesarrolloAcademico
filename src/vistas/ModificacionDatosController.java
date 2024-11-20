@@ -43,7 +43,7 @@ public class ModificacionDatosController implements Initializable {
     private Button botonMinimizar;
     @FXML
     private Button botonRegresar;
-    
+
     @FXML
     private Button botonGuardar;
     @FXML
@@ -55,7 +55,11 @@ public class ModificacionDatosController implements Initializable {
     @FXML
     private TextField jefeDeptoField;
     @FXML
-    private Spinner<Integer> totalDocentesField; 
+    private Spinner<Integer> totalDocentesField;
+    @FXML
+    private Spinner<Integer> año;
+    @FXML
+    private ComboBox periodoEscolar;
 
     //Métodos de los botones de la barra superior :)
     public void cerrarVentana(MouseEvent event) {
@@ -78,7 +82,7 @@ public class ModificacionDatosController implements Initializable {
     public void regresarVentana(MouseEvent event) throws IOException {
         // Verificar si hay datos en los campos
         boolean hayDatos = !directorField.getText().isEmpty() || !coordinadorField.getText().isEmpty()
-                || !jefeDeptoField.getText().isEmpty() || totalDocentesField.getValue() !=null;
+                || !jefeDeptoField.getText().isEmpty() || totalDocentesField.getValue() != null;
 
         // Si hay datos, mostrar mensaje de confirmación para guardar
         if (hayDatos) {
@@ -109,47 +113,51 @@ public class ModificacionDatosController implements Initializable {
         }
     }
 
-    
-
     public void limpiarCampos() {
         directorField.clear();
         coordinadorField.clear();
         jefeDeptoField.clear();
         totalDocentesField.getValueFactory().setValue(0); // Restablecer Spinner
+        año.getValueFactory().setValue(2024); // Restablecer Spinner de año al valor predeterminado
+        periodoEscolar.getSelectionModel().clearSelection(); // Limpiar selección del ComboBox
 
     }
 
-    // Método para guardar los datos en un archivo Excel
     public void guardarDatosEnExcel(MouseEvent event) {
-
         if (!validarCampos()) {
-            return; // Detener si la validación falla
+            return;
         }
-        // Define la ruta donde se guardará el archivo (cámbiala según sea necesario)
-        String rutaArchivo = "C:/Users/TUF/Documents/Admin/Excel/Informacion.xlsx";
 
-        // Crear un nuevo libro de Excel
+        String rutaArchivo = "C:/Users/TUF/Documents/Admin/Excel/Informacion.xlsx";
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Datos");
 
-        // Crear filas y celdas, y asignarles valores desde los TextFields
+        // Director en la columna A, fila 1
         Row row1 = sheet.createRow(0);
         row1.createCell(0).setCellValue(directorField.getText());
 
+        // Jefe de departamento en la columna A, fila 2
         Row row2 = sheet.createRow(1);
-        row2.createCell(0).setCellValue(coordinadorField.getText());
+        row2.createCell(0).setCellValue(jefeDeptoField.getText());
 
+        // Coordinador en la columna A, fila 3
         Row row3 = sheet.createRow(2);
-        row3.createCell(0).setCellValue(jefeDeptoField.getText());
+        row3.createCell(0).setCellValue(coordinadorField.getText());
 
+        // Año en la columna A, fila 4
         Row row4 = sheet.createRow(3);
-        row4.createCell(0).setCellValue(totalDocentesField.getValue()); // Obtener valor del Spinner
+        row4.createCell(0).setCellValue(año.getValue());
 
+        // Periodo en la columna B, fila 4
+        row4.createCell(1).setCellValue(periodoEscolar.getValue().toString());
 
-        // Intentar guardar el archivo en la ruta especificada
+        // Total de docentes en la columna C, fila 4
+        row4.createCell(2).setCellValue(totalDocentesField.getValue());
+
+        // Guardar archivo Excel
         try (FileOutputStream fileOut = new FileOutputStream(rutaArchivo)) {
             workbook.write(fileOut);
-            mostrarAlerta("Éxito", " Datos guardados exitosamente" + rutaArchivo, AlertType.INFORMATION);
+            mostrarAlerta("Éxito", "Datos guardados exitosamente en: " + rutaArchivo, AlertType.INFORMATION);
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo guardar el archivo: " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
@@ -187,11 +195,15 @@ public class ModificacionDatosController implements Initializable {
             return false;
         }
 
-         // Validar que el campo de total de docentes solo contenga números
+        // Validar que el campo de total de docentes solo contenga números
         if (totalDocentesField.getValue() == null || totalDocentesField.getValue() < 0) {
-        mostrarAlerta("Validación", "El campo 'Total de Docentes' solo debe contener números positivos.", AlertType.WARNING);
-        return false;
-    }
+            mostrarAlerta("Validación", "El campo 'Total de Docentes' solo debe contener números positivos.", AlertType.WARNING);
+            return false;
+        }
+        if (periodoEscolar.getValue() == null) {
+            mostrarAlerta("Validación", "Por favor selecciona un período escolar.", AlertType.WARNING);
+            return false;
+        }
 
         return true;
     }
@@ -199,9 +211,9 @@ public class ModificacionDatosController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Otros botones
-        
+
         // Configuración del Spinner para aceptar valores enteros
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(100,800); // Rango de 0 a 100, ajusta según necesites
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 800); // Rango de 0 a 100, ajusta según necesites
         totalDocentesField.setValueFactory(valueFactory);
         // Configuración del botón Guardar para que llame al método guardarDatosEnExcel
         botonGuardar.setOnMouseClicked(event -> guardarDatosEnExcel(event));
@@ -219,10 +231,12 @@ public class ModificacionDatosController implements Initializable {
             }
         });
         botonLimpiar.setOnMouseClicked(event -> limpiarCampos());
-        
-        
 
-        
+        // Configuración del Spinner para el año
+        SpinnerValueFactory<Integer> añoValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2100, 2024);
+        año.setValueFactory(añoValueFactory);
 
+        // Configuración del ComboBox para el período escolar
+        periodoEscolar.getItems().addAll("Enero-Julio", "Agosto-Diciembre");
     }
 }

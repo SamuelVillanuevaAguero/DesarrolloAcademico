@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
@@ -22,13 +23,13 @@
       </HBox>
       <Button fx:id="botonGuardar" layoutX="217.0" layoutY="486.0" mnemonicParsing="false" styleClass="button-azul" text="Guardar" />
       <Button fx:id="botonLimpiar" layoutX="90.0" layoutY="486.0" mnemonicParsing="false" styleClass="button-gris" text="Limpiar" />
-      <Label layoutX="90.0" layoutY="253.0" text="Director:" />
-      <Label layoutX="557.0" layoutY="253.0" text="Coordinador:" />
-      <Label layoutX="90.0" layoutY="348.0" text="Jefe del Departamento de Desarrollo Academico:" />
-      <Label layoutX="557.0" layoutY="348.0" text="Total de Docentes Adscritos:" />
-      <TextField fx:id="directorField" layoutX="90.0" layoutY="274.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="359.0" promptText="Nombre del director(a)" />
-      <TextField fx:id="coordinadorField" layoutX="557.0" layoutY="274.0" prefHeight="32.0" prefWidth="302.0" promptText="Nombre del Coordinador(a)" />
-      <TextField fx:id="jefeDeptoField" layoutX="90.0" layoutY="368.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="359.0" promptText="Nombre del Jefe de Departamento de Desarrollo Academico" />
+      <Label layoutX="90.0" layoutY="280.0" text="Director:" />
+      <Label layoutX="561.0" layoutY="280.0" text="Coordinador:" />
+      <Label layoutX="90.0" layoutY="378.0" text="Jefe del Departamento de Desarrollo Academico:" />
+      <Label layoutX="557.0" layoutY="378.0" text="Total de Docentes Adscritos:" />
+      <TextField fx:id="directorField" layoutX="90.0" layoutY="306.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="359.0" promptText="Nombre del director(a)" />
+      <TextField fx:id="coordinadorField" layoutX="557.0" layoutY="306.0" prefHeight="32.0" prefWidth="302.0" promptText="Nombre del Coordinador(a)" />
+      <TextField fx:id="jefeDeptoField" layoutX="90.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="359.0" promptText="Nombre del Jefe de Departamento de Desarrollo Academico" />
       <Label alignment="CENTER" layoutX="-1.0" layoutY="139.0" prefHeight="102.0" prefWidth="1012.0" style="-fx-font-size: 40;" styleClass="title" text="Modificación de datos" textFill="#0735b1" AnchorPane.topAnchor="120.0" />
       <ImageView fitHeight="102.0" fitWidth="101.0" layoutX="790.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="125.0">
          <image>
@@ -50,6 +51,10 @@
             <Image url="@../utilerias/modificacion/logoTECNM.png" />
          </image>
       </ImageView>
-      <Spinner fx:id="totalDocentesField" layoutX="559.0" layoutY="368.0" prefWidth="90.0" />
+      <Spinner fx:id="totalDocentesField" layoutX="557.0" layoutY="400.0" prefWidth="90.0" />
+      <Spinner fx:id="año" layoutX="90.0" layoutY="234.0" prefHeight="32.0" prefWidth="90.0" />
+      <ComboBox fx:id="periodoEscolar" layoutX="557.0" layoutY="231.0" prefWidth="150.0" promptText="Periodo escolar" styleClass="combo-box" />
+      <Label layoutX="90.0" layoutY="207.0" text="Año:" />
+      <Label layoutX="561.0" layoutY="207.0" text="Periodo:" />
    </children>
 </AnchorPane>
