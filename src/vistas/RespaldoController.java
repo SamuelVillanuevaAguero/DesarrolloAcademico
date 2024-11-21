@@ -164,8 +164,8 @@ private void exportar_respaldo(ActionEvent event) {
             }
 
             System.out.println("Exportando respaldo...");
+            ir_respaldo(event);
         } else {
-                
             System.out.println("Exportación cancelada.");
         }
     } catch (IOException ex) {
@@ -283,6 +283,7 @@ private void importacion_importar(ActionEvent event) {
             }
 
             System.out.println("Importando respaldo...");
+            regresarVentana(event);
         } else {
                 
             System.out.println("Importación cancelada.");
@@ -346,4 +347,19 @@ public void descomprimirRar(File archivoRar, File destino) throws IOException, R
     }
     archive.close();
 }
+
+private void regresarVentana(ActionEvent event) throws IOException {
+    Parent root = FXMLLoader.load(getClass().getResource("/vistas/Principal.fxml"));
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
+}
+
+private void ir_respaldo(ActionEvent event) throws IOException {
+    Parent root = FXMLLoader.load(getClass().getResource("/vistas/Respaldo.fxml"));
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
+}
+
 }
