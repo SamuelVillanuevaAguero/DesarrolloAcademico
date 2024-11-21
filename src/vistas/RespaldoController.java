@@ -28,6 +28,7 @@ import javafx.stage.Modality;
 import utilerias.general.ControladorGeneral;
 import java.io.*;
 import java.util.zip.*;
+import javafx.stage.DirectoryChooser;
 
 
 /**
@@ -122,14 +123,14 @@ public class RespaldoController implements Initializable {
         }
     }
      @FXML
-    private void examinar_exportar(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar ubicación para exportar");
-        File file = fileChooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
-        if (file != null) {
-            txt_ruta_export.setText(file.getAbsolutePath());
-        }
+private void examinar_exportar(ActionEvent event) {
+    DirectoryChooser directoryChooser = new DirectoryChooser();
+    directoryChooser.setTitle("Seleccionar ubicación para exportar");
+    File selectedDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
+    if (selectedDirectory != null) {
+        txt_ruta_export.setText(selectedDirectory.getAbsolutePath());
     }
+}
 
  @FXML
 private void exportar_respaldo(ActionEvent event) {
@@ -151,17 +152,14 @@ private void exportar_respaldo(ActionEvent event) {
 
         if (controller.isConfirmado()) {
             String formato = select_formato_export.getValue();
-            File destino = new File(txt_ruta_export.getText());
+            File destinoDir = new File(txt_ruta_export.getText());
+            File destino;
 
             if ("ZIP".equals(formato)) {
-                if (!destino.getName().endsWith(".zip")) {
-                    destino = new File(destino.getAbsolutePath() + ".zip");
-                }
+                destino = new File(destinoDir, "Gestion_De_Projectos.zip");
                 comprimirZip(new File("Gestion_De_Projectos"), destino);
             } else if ("RAR".equals(formato)) {
-                if (!destino.getName().endsWith(".rar")) {
-                    destino = new File(destino.getAbsolutePath() + ".rar");
-                }
+                destino = new File(destinoDir, "Gestion_De_Projectos.rar");
                 comprimirRar(new File("Gestion_De_Projectos"), destino);
             }
 
