@@ -1,5 +1,6 @@
 package vistas;
 
+import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -41,12 +43,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import utilerias.general.ControladorGeneral;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 public class VizualizacionDatosController implements Initializable {
 
@@ -116,6 +123,9 @@ public class VizualizacionDatosController implements Initializable {
         TableColumn<Evento, String> colNombreEvento = new TableColumn<>("Nombre del Evento");
         colNombreEvento.setCellValueFactory(new PropertyValueFactory<>("nombreEvento"));
 
+        TableColumn<Evento, String> colCapacitacion = new TableColumn<>("Capacitación");
+        colCapacitacion.setCellValueFactory(new PropertyValueFactory<>("capacitacion"));
+
         TableColumn<Evento, String> colNombreFacilitador = new TableColumn<>("Nombre del Facilitador");
         colNombreFacilitador.setCellValueFactory(new PropertyValueFactory<>("nombreFacilitador"));
 
@@ -128,7 +138,7 @@ public class VizualizacionDatosController implements Initializable {
 
         tableView.getColumns().addAll(colHoraInicio, colHoraFinal, colApellidoPaterno,
                 colApellidoMaterno, colNombres, colRFC, colSexo, colDepartamento,
-                colPuesto, colNombreEvento, colNombreFacilitador, colPeriodo, colAcreditacion);
+                colPuesto, colNombreEvento, colCapacitacion, colNombreFacilitador, colPeriodo, colAcreditacion);
     }
 
     private Callback<TableColumn<Evento, Void>, TableCell<Evento, Void>> getButtonCellFactory() {
@@ -216,26 +226,119 @@ public class VizualizacionDatosController implements Initializable {
     private void Exportar(ActionEvent event) {
         // Crear un FileChooser para seleccionar dónde guardar el archivo
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Guardar archivo");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "ListaAsistencia.csv"));
+        fileChooser.setTitle("Guardar archivo Excel");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx"));
 
         // Abrir el diálogo de guardar
-        var file = fileChooser.showSaveDialog(null);
+        File file = fileChooser.showSaveDialog(null);
         if (file != null) {
-            try (FileWriter writer = new FileWriter(file)) {
-                // Escribir encabezados en el archivo CSV
-                writer.write("Nombre del Participante, Curso\n");
+            try (Workbook workbook = new XSSFWorkbook()) {
+                // Crear una hoja en el archivo Excel
+                Sheet sheet = workbook.createSheet("Lista de Asistencia");
 
-                // Recorrer las filas de la tabla
+                // Crear estilo para los encabezados
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font font = workbook.createFont();
+                font.setBold(true);
+                headerStyle.setFont(font);
+                headerStyle.setAlignment(CellStyle.ALIGN_LEFT);
+
+                // Crear estilo para bordes
+                CellStyle borderStyle = workbook.createCellStyle();
+                borderStyle.setBorderBottom(CellStyle.BORDER_THIN);
+                borderStyle.setBorderTop(CellStyle.BORDER_THIN);
+                borderStyle.setBorderLeft(CellStyle.BORDER_THIN);
+                borderStyle.setBorderRight(CellStyle.BORDER_THIN);
+
+                // Extraer los datos dinámicos de la tabla
+                Evento ejemplo = tableView.getItems().get(0); // Obtener el primer elemento como referencia
+                String curso = ejemplo.getNombreEvento(); // Nombre del curso
+                String facilitador = ejemplo.getNombreFacilitador(); // Nombre del facilitador
+                String periodo = ejemplo.getPeriodo(); // Período
+
+                // Sección de encabezado
+                Row headerRow1 = sheet.createRow(4); // Fila 5
+                headerRow1.createCell(2).setCellValue("NOMBRE DEL EVENTO:");
+                headerRow1.createCell(3).setCellValue(curso);
+                headerRow1.createCell(8).setCellValue("DURACIÓN:");
+                headerRow1.createCell(11).setCellValue("HORARIO:");
+
+                Row headerRow2 = sheet.createRow(5); // Fila 6
+                headerRow2.createCell(2).setCellValue("NOMBRE DEL FACILITADOR (A):");
+                headerRow2.createCell(3).setCellValue(facilitador);
+                headerRow2.createCell(11).setCellValue("TIPO:");
+
+                Row headerRow3 = sheet.createRow(6); // Fila 7
+                headerRow3.createCell(2).setCellValue("PERIODO:");
+                headerRow3.createCell(3).setCellValue(periodo);
+                headerRow3.createCell(11).setCellValue("SEDE:");
+
+                // Crear encabezados de tabla
+                Row tableHeaderRow = sheet.createRow(12); // Fila 13
+                String[] headers = {"No.", "NOMBRE DEL PARTICIPANTE", "R.F.C", "PUESTO Y DEPARTAMENTO DE ADSCRIPCIÓN",
+                    "H", "M", "PUESTO TIPO", "ASISTENCIA", "CALIFICACIÓN"};
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = tableHeaderRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // Obtener datos de la tabla y agregarlos al Excel
                 List<Evento> participantes = tableView.getItems();
-                for (Evento participante : participantes) {
-                    // Filtrar por curso y acreditación
-                    if (participante.getNombreEvento().equals(campoBusqueda) && participante.isAcreditado()) {
-                        writer.write(participante.getNombres() + ", " + participante.getNombreEvento() + "\n");
+                int rowIndex = 13; // Comenzar en la fila 14
+                for (int i = 0; i < participantes.size(); i++) {
+                    Evento participante = participantes.get(i);
+                    Row row = sheet.createRow(rowIndex++);
+
+                    // Llenar datos
+                    row.createCell(0).setCellValue(i + 1); // Número
+                    row.createCell(1).setCellValue(participante.getNombres()); // Nombre del participante
+                    row.createCell(2).setCellValue(participante.getRfc()); // RFC
+                    row.createCell(3).setCellValue(participante.getDepartamento()); // Departamento
+
+                    // Sexo (H/M)
+                    row.createCell(4).setCellValue(participante.getSexo().equalsIgnoreCase("Hombre") ? "X" : "");
+                    row.createCell(5).setCellValue(participante.getSexo().equalsIgnoreCase("Mujer") ? "X" : "");
+
+                    // Opcional: Rellenar otras columnas si los datos están disponibles
+                    if (participante.getPuesto() != null) {
+                        row.createCell(6).setCellValue(participante.getPuesto()); // Puesto Tipo
+                    }
+                    /*     if (participante.getAsistencia() != null) {
+                    row.createCell(7).setCellValue(participante.getAsistencia()); // Asistencia
+                }
+                if (participante.getCalificacion() != null) {
+                    row.createCell(8).setCellValue(participante.getCalificacion()); // Calificación
+                }
+                     */
+                    // Aplicar estilo de borde a todas las celdas
+                    for (int j = 0; j < headers.length; j++) {
+                        if (row.getCell(j) != null) {
+                            row.getCell(j).setCellStyle(borderStyle);
+                        }
                     }
                 }
 
-                System.out.println("Archivo exportado con éxito");
+                // Ajustar automáticamente el tamaño de las columnas
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Agregar filas para las firmas
+            int firmaRowIndex = rowIndex + 2; // Dejar un espacio debajo de la tabla
+            Row firmaRow1 = sheet.createRow(firmaRowIndex);
+            firmaRow1.createCell(2).setCellValue("NOMBRE Y FIRMA DEL FACILITADOR(A)");
+            Row firmaRow2 = sheet.createRow(firmaRowIndex + 3); // Tres filas más abajo
+            firmaRow2.createCell(7).setCellValue("NOMBRE Y FIRMA DEL COORDINADOR(A) DE ACTUALIZACIÓN DOCENTE");
+
+
+                // Escribir el archivo Excel en disco
+                try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                    workbook.write(fileOut);
+                }
+
+                System.out.println("Archivo Excel exportado con éxito");
+
             } catch (IOException e) {
                 System.out.println("Error al exportar: " + e.getMessage());
             }
@@ -359,7 +462,7 @@ public class VizualizacionDatosController implements Initializable {
             Row headerRow = sheet.createRow(0);
             String[] columnas = {
                 "HoraInicio", "HoraFinal", "ApellidoPaterno", "ApellidoMaterno", "Nombres",
-                "RFC", "Sexo", "Departamento", "Puesto", "NombreEvento",
+                "RFC", "Sexo", "Departamento", "Puesto", "NombreEvento", "Capacitacion",
                 "NombreFacilitador", "Periodo", "Acreditación"
             };
 
@@ -383,9 +486,10 @@ public class VizualizacionDatosController implements Initializable {
                 row.createCell(7).setCellValue(evento.getDepartamento());
                 row.createCell(8).setCellValue(evento.getPuesto());
                 row.createCell(9).setCellValue(evento.getNombreEvento());
-                row.createCell(10).setCellValue(evento.getNombreFacilitador());
-                row.createCell(11).setCellValue(evento.getPeriodo());
-                row.createCell(12).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
+                row.createCell(10).setCellValue(evento.getCapacitacion());
+                row.createCell(11).setCellValue(evento.getNombreFacilitador());
+                row.createCell(12).setCellValue(evento.getPeriodo());
+                row.createCell(13).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
             }
 
             // Autoajustar el ancho de las columnas
@@ -423,11 +527,11 @@ public class VizualizacionDatosController implements Initializable {
 
     public static class Evento {
 
-        private String horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, departamento, puesto, nombreEvento, nombreFacilitador, periodo;
+        private String horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo, departamento, puesto, nombreEvento, capacitacion, nombreFacilitador, periodo;
         private BooleanProperty acreditacion;
 
         public Evento(String horaInicio, String horaFinal, String apellidoPaterno, String apellidoMaterno, String nombres,
-                String rfc, String sexo, String departamento, String puesto, String nombreEvento, String nombreFacilitador,
+                String rfc, String sexo, String departamento, String puesto, String nombreEvento, String capacitacion, String nombreFacilitador,
                 String periodo, Boolean acreditacion) {
             this.horaInicio = horaInicio;
             this.horaFinal = horaFinal;
@@ -439,6 +543,7 @@ public class VizualizacionDatosController implements Initializable {
             this.departamento = departamento;
             this.puesto = puesto;
             this.nombreEvento = nombreEvento;
+            this.capacitacion = capacitacion;
             this.nombreFacilitador = nombreFacilitador;
             this.periodo = periodo;
             this.acreditacion = new SimpleBooleanProperty(acreditacion);
@@ -496,6 +601,14 @@ public class VizualizacionDatosController implements Initializable {
             return nombreEvento;
         }
 
+        public String getCapacitacion() {
+            return capacitacion;
+        }
+
+        public void setCapacitacion(String capacitacion) {
+            this.capacitacion = capacitacion;
+        }
+
         public String getNombreFacilitador() {
             return nombreFacilitador;
         }
@@ -522,6 +635,7 @@ public class VizualizacionDatosController implements Initializable {
 
         public static List<Evento> leerEventosDesdeExcel(String rutaArchivo) throws IOException {
             List<Evento> eventos = new ArrayList<>();
+
             try (FileInputStream archivo = new FileInputStream(rutaArchivo); Workbook workbook = new XSSFWorkbook(archivo)) {
                 Sheet sheet = workbook.getSheetAt(0);
                 for (Row row : sheet) {
@@ -539,12 +653,13 @@ public class VizualizacionDatosController implements Initializable {
                     String departamento = getCellValue(row.getCell(9));
                     String puesto = getCellValue(row.getCell(10));
                     String nombreEvento = getCellValue(row.getCell(11));
+                    String capacitacion = getCellValue(row.getCell(15));
                     String nombreFacilitador = getCellValue(row.getCell(12));
                     String periodo = getCellValue(row.getCell(13));
                     Boolean acreditacion = "Sí".equalsIgnoreCase(getCellValue(row.getCell(14)));
 
                     eventos.add(new Evento(horaInicio, horaFinal, apellidoPaterno, apellidoMaterno, nombres, rfc, sexo,
-                            departamento, puesto, nombreEvento, nombreFacilitador, periodo, acreditacion));
+                            departamento, puesto, nombreEvento, capacitacion, nombreFacilitador, periodo, acreditacion));
                 }
             }
             return eventos;
@@ -554,5 +669,4 @@ public class VizualizacionDatosController implements Initializable {
             return cell != null ? cell.toString() : "";
         }
     }
-
 }
