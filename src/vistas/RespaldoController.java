@@ -4,6 +4,9 @@
  */
 package vistas;
 
+import com.github.junrar.Archive;
+import com.github.junrar.exception.RarException;
+import com.github.junrar.rarfile.FileHeader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -23,6 +26,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
 import utilerias.general.ControladorGeneral;
+import java.io.*;
+import java.util.zip.*;
+
 
 /**
  * FXML Controller class
@@ -124,35 +130,92 @@ public class RespaldoController implements Initializable {
             txt_ruta_export.setText(file.getAbsolutePath());
         }
     }
-   @FXML
-    private void exportar_respaldo(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/ConfirmacionExportacion.fxml"));
-            Parent root = loader.load();
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Confirmación de Exportación");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
+ @FXML
+private void exportar_respaldo(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/ConfirmacionExportacion.fxml"));
+        Parent root = loader.load();
 
-            ConfirmacionExportacionController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Confirmación de Exportación");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        Scene scene = new Scene(root);
+        dialogStage.setScene(scene);
 
-            dialogStage.showAndWait();
+        ConfirmacionExportacionController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
 
-            if (controller.isConfirmado()) {
-                // Lógica para exportar el archivo seleccionado
-                System.out.println("Exportando respaldo...");
-            } else {
-                // Lógica para cancelar la exportación
-                System.out.println("Exportación cancelada.");
+        dialogStage.showAndWait();
+
+        if (controller.isConfirmado()) {
+            String formato = select_formato_export.getValue();
+            File destino = new File(txt_ruta_export.getText());
+
+            if ("ZIP".equals(formato)) {
+                if (!destino.getName().endsWith(".zip")) {
+                    destino = new File(destino.getAbsolutePath() + ".zip");
+                }
+                comprimirZip(new File("Gestion_De_Projectos"), destino);
+            } else if ("RAR".equals(formato)) {
+                if (!destino.getName().endsWith(".rar")) {
+                    destino = new File(destino.getAbsolutePath() + ".rar");
+                }
+                comprimirRar(new File("Gestion_De_Projectos"), destino);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
+
+            System.out.println("Exportando respaldo...");
+        } else {
+                
+            System.out.println("Exportación cancelada.");
         }
+    } catch (IOException ex) {
+        Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
+
+private void comprimirZip(File sourceDir, File zipFile) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(zipFile);
+         ZipOutputStream zos = new ZipOutputStream(fos)) {
+        zipDirectory(sourceDir, sourceDir.getName(), zos);
+    }
+}
+
+private void zipDirectory(File folder, String parentFolder, ZipOutputStream zos) throws IOException {
+    File[] files = folder.listFiles();
+    if (files == null) {
+        return;
+    }
+    for (File file : files) {
+        if (file.isDirectory()) {
+            zipDirectory(file, parentFolder + "/" + file.getName(), zos);
+            continue;
+        }
+        zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, length);
+            }
+        }
+        zos.closeEntry();
+    }
+}
+
+private void comprimirRar(File sourceDir, File rarFile) throws IOException {
+    ProcessBuilder pb = new ProcessBuilder("rar", "a", rarFile.getAbsolutePath(), sourceDir.getAbsolutePath());
+    pb.inheritIO();
+    Process process = pb.start();
+    try {
+        process.waitFor();
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new IOException("La compresión RAR fue interrumpida", e);
+    }
+}
+
 
     // Methodos de la vista de importar respaldo
     @FXML
@@ -166,45 +229,123 @@ public class RespaldoController implements Initializable {
         Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
     }
     }
-    @FXML
-    private void examinar_importar(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo de respaldo");
-        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
-        if (file != null) {
-            txt_ruta_import.setText(file.getAbsolutePath());
-        }
+   @FXML
+private void examinar_importar(ActionEvent event) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Seleccionar archivo de respaldo");
+    fileChooser.getExtensionFilters().addAll(
+        new FileChooser.ExtensionFilter("Archivos RAR", "*.rar"),
+        new FileChooser.ExtensionFilter("Archivos ZIP", "*.zip")
+    );
+    File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+    if (file != null) {
+        txt_ruta_import.setText(file.getAbsolutePath());
     }
+}
 
     @FXML
-    private void importacion_importar(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/ConfirmacionImportacion.fxml"));
-            Parent root = loader.load();
+private void importacion_importar(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/ConfirmacionImportacion.fxml"));
+        Parent root = loader.load();
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Confirmación de Importación");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Confirmación de Importación");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        Scene scene = new Scene(root);
+        dialogStage.setScene(scene);
 
-            ConfirmacionImportacionController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
+        ConfirmacionImportacionController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
 
-            dialogStage.showAndWait();
+        dialogStage.showAndWait();
 
-            if (controller.isConfirmado()) {
-                // Lógica para importar el archivo seleccionado
-                System.out.println("Importando respaldo...");
+        if (controller.isConfirmado()) {
+            File archivo = new File(txt_ruta_import.getText());
+            File destino = new File("Gestion_De_Projectos");
+
+            if (!destino.exists()) {
+                destino.mkdirs();
             } else {
-                // Lógica para cancelar la importación
-                System.out.println("Importación cancelada.");
+                
+                for (File file : destino.listFiles()) {
+                    if (file.isDirectory()) {
+                        deleteDirectory(file);
+                    } else {
+                        file.delete();
+                    }
+                }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
+
+            if (archivo.getName().endsWith(".zip")) {
+                descomprimirZip(archivo, destino);
+            } else if (archivo.getName().endsWith(".rar")) {
+                descomprimirRar(archivo, destino);
+            }
+
+            System.out.println("Importando respaldo...");
+        } else {
+                
+            System.out.println("Importación cancelada.");
+        }
+    } catch (IOException | RarException ex) {
+        Logger.getLogger(RespaldoController.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
+
+private void deleteDirectory(File directory) {
+    File[] files = directory.listFiles();
+    if (files != null) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deleteDirectory(file);
+            } else {
+                file.delete();
+            }
         }
     }
+    directory.delete();
+}
 
-    
+public void descomprimirZip(File archivoZip, File destino) throws IOException {
+    byte[] buffer = new byte[1024];
+    ZipInputStream zis = new ZipInputStream(new FileInputStream(archivoZip));
+    ZipEntry zipEntry = zis.getNextEntry();
+    while (zipEntry != null) {
+        File nuevoArchivo = new File(destino, zipEntry.getName());
+        if (zipEntry.isDirectory()) {
+            nuevoArchivo.mkdirs();
+        } else {
+            new File(nuevoArchivo.getParent()).mkdirs();
+            FileOutputStream fos = new FileOutputStream(nuevoArchivo);
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+        }
+        zipEntry = zis.getNextEntry();
+    }
+    zis.closeEntry();
+    zis.close();
+}
+
+public void descomprimirRar(File archivoRar, File destino) throws IOException, RarException {
+    Archive archive = new Archive(new FileInputStream(archivoRar));
+    FileHeader fileHeader = archive.nextFileHeader();
+    while (fileHeader != null) {
+        File nuevoArchivo = new File(destino, fileHeader.getFileNameString().trim());
+        if (fileHeader.isDirectory()) {
+            nuevoArchivo.mkdirs();
+        } else {
+            new File(nuevoArchivo.getParent()).mkdirs();
+            FileOutputStream fos = new FileOutputStream(nuevoArchivo);
+            archive.extractFile(fileHeader, fos);
+            fos.close();
+        }
+        fileHeader = archive.nextFileHeader();
+    }
+    archive.close();
+}
 }
