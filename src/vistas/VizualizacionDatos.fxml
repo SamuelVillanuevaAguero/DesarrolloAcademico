@@ -42,7 +42,7 @@
          </cursor>
       </Button>
       <Button fx:id="botonGuardar" layoutX="775.0" layoutY="533.0" mnemonicParsing="false" onAction="#guardar" prefHeight="38.0" prefWidth="98.0" styleClass="button-azul" text="Guardar" />
-      <TextField fx:id="campoBusqueda" layoutX="379.0" layoutY="89.0" prefHeight="32.0" prefWidth="200.0" />
+      <TextField fx:id="campoBusqueda" layoutX="379.0" layoutY="89.0" onKeyReleased="#buscarPorEnter" prefHeight="32.0" prefWidth="200.0" />
       <ImageView layoutX="556.0" layoutY="94.0">
          <image>
             <Image url="@../utilerias/visualizacionDatos/logoLupa.png" />
