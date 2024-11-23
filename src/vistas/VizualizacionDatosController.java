@@ -222,25 +222,25 @@ public class VizualizacionDatosController implements Initializable {
         }
     }
 
-    @FXML
-    private void Exportar(ActionEvent event) {
-        // Crear un FileChooser para seleccionar dónde guardar el archivo
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Guardar archivo Excel");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx"));
+@FXML
+private void Exportar(ActionEvent event) {
+    // Crear un FileChooser para seleccionar dónde guardar el archivo
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Guardar archivo Excel");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx"));
 
-        // Abrir el diálogo de guardar
-        File file = fileChooser.showSaveDialog(null);
-        if (file != null) {
-            try (Workbook workbook = new XSSFWorkbook()) {
-                // Crear una hoja en el archivo Excel
-                Sheet sheet = workbook.createSheet("Lista de Asistencia");
+    // Abrir el diálogo de guardar
+    File file = fileChooser.showSaveDialog(null);
+    if (file != null) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            // Crear una hoja en el archivo Excel
+            Sheet sheet = workbook.createSheet("Lista de Asistencia");
 
-                // Crear estilo para los encabezados
-                CellStyle headerStyle = workbook.createCellStyle();
-                Font font = workbook.createFont();
-                font.setBold(true);
-                headerStyle.setFont(font);
+            // Crear estilo para los encabezados
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
                 headerStyle.setAlignment(CellStyle.ALIGN_LEFT);
 
                 // Crear estilo para bordes
@@ -250,100 +250,94 @@ public class VizualizacionDatosController implements Initializable {
                 borderStyle.setBorderLeft(CellStyle.BORDER_THIN);
                 borderStyle.setBorderRight(CellStyle.BORDER_THIN);
 
-                // Extraer los datos dinámicos de la tabla
-                Evento ejemplo = tableView.getItems().get(0); // Obtener el primer elemento como referencia
-                String curso = ejemplo.getNombreEvento(); // Nombre del curso
-                String facilitador = ejemplo.getNombreFacilitador(); // Nombre del facilitador
-                String periodo = ejemplo.getPeriodo(); // Período
+            // Extraer los datos dinámicos de la tabla
+            Evento ejemplo = tableView.getItems().get(0); // Obtener el primer elemento como referencia
+            String curso = ejemplo.getNombreEvento(); // Nombre del curso
+            String facilitador = ejemplo.getNombreFacilitador(); // Nombre del facilitador
+            String periodo = ejemplo.getPeriodo(); // Período
 
-                // Sección de encabezado
-                Row headerRow1 = sheet.createRow(4); // Fila 5
-                headerRow1.createCell(2).setCellValue("NOMBRE DEL EVENTO:");
-                headerRow1.createCell(3).setCellValue(curso);
-                headerRow1.createCell(8).setCellValue("DURACIÓN:");
-                headerRow1.createCell(11).setCellValue("HORARIO:");
+            // Sección de encabezado (ajustando posiciones)
+            Row headerRow1 = sheet.createRow(4); 
+            headerRow1.createCell(1).setCellValue("NOMBRE DEL EVENTO:");
+            headerRow1.createCell(2).setCellValue(curso); // Movido a columna C
+            headerRow1.createCell(6).setCellValue("DURACIÓN:");
+            headerRow1.createCell(9).setCellValue("HORARIO:");
 
-                Row headerRow2 = sheet.createRow(5); // Fila 6
-                headerRow2.createCell(2).setCellValue("NOMBRE DEL FACILITADOR (A):");
-                headerRow2.createCell(3).setCellValue(facilitador);
-                headerRow2.createCell(11).setCellValue("TIPO:");
+            Row headerRow2 = sheet.createRow(5); 
+            headerRow2.createCell(1).setCellValue("NOMBRE DEL FACILITADOR (A):");
+            headerRow2.createCell(2).setCellValue(facilitador); // Movido a columna C
+            headerRow2.createCell(6).setCellValue("TIPO:");
 
-                Row headerRow3 = sheet.createRow(6); // Fila 7
-                headerRow3.createCell(2).setCellValue("PERIODO:");
-                headerRow3.createCell(3).setCellValue(periodo);
-                headerRow3.createCell(11).setCellValue("SEDE:");
+            Row headerRow3 = sheet.createRow(6); 
+            headerRow3.createCell(1).setCellValue("PERIODO:");
+            headerRow3.createCell(2).setCellValue(periodo); // Movido a columna C
+            headerRow3.createCell(6).setCellValue("SEDE:");
 
-                // Crear encabezados de tabla
-                Row tableHeaderRow = sheet.createRow(12); // Fila 13
-                String[] headers = {"No.", "NOMBRE DEL PARTICIPANTE", "R.F.C", "PUESTO Y DEPARTAMENTO DE ADSCRIPCIÓN",
-                    "H", "M", "PUESTO TIPO", "ASISTENCIA", "CALIFICACIÓN"};
-                for (int i = 0; i < headers.length; i++) {
-                    Cell cell = tableHeaderRow.createCell(i);
-                    cell.setCellValue(headers[i]);
-                    cell.setCellStyle(headerStyle);
-                }
-
-                // Obtener datos de la tabla y agregarlos al Excel
-                List<Evento> participantes = tableView.getItems();
-                int rowIndex = 13; // Comenzar en la fila 14
-                for (int i = 0; i < participantes.size(); i++) {
-                    Evento participante = participantes.get(i);
-                    Row row = sheet.createRow(rowIndex++);
-
-                    // Llenar datos
-                    row.createCell(0).setCellValue(i + 1); // Número
-                    row.createCell(1).setCellValue(participante.getNombres()); // Nombre del participante
-                    row.createCell(2).setCellValue(participante.getRfc()); // RFC
-                    row.createCell(3).setCellValue(participante.getDepartamento()); // Departamento
-
-                    // Sexo (H/M)
-                    row.createCell(4).setCellValue(participante.getSexo().equalsIgnoreCase("Hombre") ? "X" : "");
-                    row.createCell(5).setCellValue(participante.getSexo().equalsIgnoreCase("Mujer") ? "X" : "");
-
-                    // Opcional: Rellenar otras columnas si los datos están disponibles
-                    if (participante.getPuesto() != null) {
-                        row.createCell(6).setCellValue(participante.getPuesto()); // Puesto Tipo
-                    }
-                    /*     if (participante.getAsistencia() != null) {
-                    row.createCell(7).setCellValue(participante.getAsistencia()); // Asistencia
-                }
-                if (participante.getCalificacion() != null) {
-                    row.createCell(8).setCellValue(participante.getCalificacion()); // Calificación
-                }
-                     */
-                    // Aplicar estilo de borde a todas las celdas
-                    for (int j = 0; j < headers.length; j++) {
-                        if (row.getCell(j) != null) {
-                            row.getCell(j).setCellStyle(borderStyle);
-                        }
-                    }
-                }
-
-                // Ajustar automáticamente el tamaño de las columnas
-                for (int i = 0; i < headers.length; i++) {
-                    sheet.autoSizeColumn(i);
-                }
-
-                // Agregar filas para las firmas
-            int firmaRowIndex = rowIndex + 2; // Dejar un espacio debajo de la tabla
-            Row firmaRow1 = sheet.createRow(firmaRowIndex);
-            firmaRow1.createCell(2).setCellValue("NOMBRE Y FIRMA DEL FACILITADOR(A)");
-            Row firmaRow2 = sheet.createRow(firmaRowIndex + 3); // Tres filas más abajo
-            firmaRow2.createCell(7).setCellValue("NOMBRE Y FIRMA DEL COORDINADOR(A) DE ACTUALIZACIÓN DOCENTE");
-
-
-                // Escribir el archivo Excel en disco
-                try (FileOutputStream fileOut = new FileOutputStream(file)) {
-                    workbook.write(fileOut);
-                }
-
-                System.out.println("Archivo Excel exportado con éxito");
-
-            } catch (IOException e) {
-                System.out.println("Error al exportar: " + e.getMessage());
+            // Crear encabezados de tabla
+            Row tableHeaderRow = sheet.createRow(8); 
+            String[] headers = {"No.", "NOMBRE DEL PARTICIPANTE", "R.F.C", "PUESTO Y DEPARTAMENTO DE ADSCRIPCIÓN",
+                "H", "M", "PUESTO TIPO", "ASISTENCIA", "CALIFICACIÓN"};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = tableHeaderRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
             }
+
+            // Obtener datos de la tabla y agregarlos al Excel
+            List<Evento> participantes = tableView.getItems();
+            int rowIndex = 9; // Comenzar en la fila 10
+            for (int i = 0; i < participantes.size(); i++) {
+                Evento participante = participantes.get(i);
+                Row row = sheet.createRow(rowIndex++);
+
+                // Llenar datos
+                row.createCell(0).setCellValue(i + 1); // Número
+                row.createCell(1).setCellValue(participante.getNombres()); // Nombre del participante
+                row.createCell(2).setCellValue(participante.getRfc()); // RFC
+                row.createCell(3).setCellValue(participante.getDepartamento()); // Departamento
+
+                // Sexo (H/M)
+                row.createCell(4).setCellValue(participante.getSexo().equalsIgnoreCase("Hombre") ? "X" : "");
+                row.createCell(5).setCellValue(participante.getSexo().equalsIgnoreCase("Mujer") ? "X" : "");
+
+                // Opcional: Rellenar otras columnas si los datos están disponibles
+                if (participante.getPuesto() != null) {
+                    row.createCell(6).setCellValue(participante.getPuesto()); // Puesto Tipo
+                }
+
+                // Aplicar estilo de borde a todas las celdas
+                for (int j = 0; j < headers.length; j++) {
+                    if (row.getCell(j) != null) {
+                        row.getCell(j).setCellStyle(borderStyle);
+                    }
+                }
+            }
+
+            // Ajustar automáticamente el tamaño de las columnas
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Agregar filas para las firmas
+            int firmaRowIndex = rowIndex + 5; // Dejar un espacio debajo de la tabla
+            Row firmaRow1 = sheet.createRow(firmaRowIndex);
+            firmaRow1.createCell(1).setCellValue("NOMBRE Y FIRMA DEL FACILITADOR(A)");
+            Row firmaRow2 = sheet.createRow(firmaRowIndex + 1); // Tres filas más abajo
+            firmaRow2.createCell(5).setCellValue("NOMBRE Y FIRMA DEL COORDINADOR(A) DE ACTUALIZACIÓN DOCENTE");
+
+            // Escribir el archivo Excel en disco
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut);
+            }
+
+            System.out.println("Archivo Excel exportado con éxito");
+
+        } catch (IOException e) {
+            System.out.println("Error al exportar: " + e.getMessage());
         }
     }
+}
+
 
     private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
         Alert alert = new Alert(tipo);
