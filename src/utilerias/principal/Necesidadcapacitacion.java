@@ -1,6 +1,5 @@
 package utilerias.principal;
 
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -64,16 +63,24 @@ public class Necesidadcapacitacion {
         Workbook workbook = new XSSFWorkbook(fis);
         Sheet sheet = workbook.getSheetAt(0);
 
+        // Recorrer filas del archivo Excel
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) {
-                continue; // Saltar encabezado
+            if (row.getRowNum() < 2) { // Saltar encabezados (las primeras dos filas)
+                continue;
             }
-            String nombreCompleto = leerCeldaComoTexto(row.getCell(0)); // Columna A
-            String fp = leerCeldaComoTexto(row.getCell(2)); // Columna C
-            String ad = leerCeldaComoTexto(row.getCell(3)); // Columna D
 
-            if (!nombreCompleto.isEmpty()) {
-                necesidades.put(nombreCompleto, new String[]{fp, ad});
+            // Leer valores de las celdas
+            String nombreCompleto = leerCeldaComoTexto(row.getCell(0)); // Columna A: Nombre Completo
+            String fd = leerCeldaComoTexto(row.getCell(2)); // Columna C: FD 
+            String ap = leerCeldaComoTexto(row.getCell(3)); // Columna D: AP 
+
+            // Verificar si FD o AP contiene "Recomendable"
+            if (!nombreCompleto.isEmpty()
+                    && ("Recomendable".equalsIgnoreCase(fd) || "Recomendable".equalsIgnoreCase(ap))) {
+                necesidades.put(nombreCompleto, new String[]{
+                    "Recomendable".equalsIgnoreCase(fd) ? "Recomendable" : "",
+                    "Recomendable".equalsIgnoreCase(ap) ? "Recomendable" : ""
+                });
             }
         }
 
@@ -82,42 +89,41 @@ public class Necesidadcapacitacion {
         return necesidades;
     }
 
-    // Generar el nuevo archivo basado en la comparación
     private static void generarArchivoNuevo(List<String[]> listaCapacitacion, Map<String, String[]> necesidades, String rutaSalida) throws IOException {
         Workbook workbookNuevo = new XSSFWorkbook();
-        Sheet sheetNuevo = workbookNuevo.createSheet("Docentes Recomendable");
+        Sheet sheetNuevo = workbookNuevo.createSheet("Docentes Recomendables");
 
-        // Encabezados
-        Row headerRow1 = sheetNuevo.createRow(0);
+        // Crear encabezados
+        Row headerRow1 = sheetNuevo.createRow(0); // Primera fila para el título
         headerRow1.createCell(0).setCellValue("Nombre");
         headerRow1.createCell(1).setCellValue("Necesidad de capacitación detectada");
         headerRow1.createCell(2).setCellValue("Necesidad de capacitación detectada");
 
-        Row headerRow2 = sheetNuevo.createRow(1);
-        headerRow2.createCell(1).setCellValue("FP");
-        headerRow2.createCell(2).setCellValue("AD");
+        Row headerRow2 = sheetNuevo.createRow(1); // Segunda fila para subcategorías
+        headerRow2.createCell(1).setCellValue("FD"); 
+        headerRow2.createCell(2).setCellValue("AP"); 
 
-        // Generador aleatorio
-        Random random = new Random();
-
-        // Llenar los datos
-        int rowIndex = 2; // Comenzar en la tercera fila
+        // Crear un conjunto de nombres completos en el archivo programa_de_capacitacion(1)
+        Set<String> nombresCapacitacion = new HashSet<>();
         for (String[] profesor : listaCapacitacion) {
             String nombreCompleto = profesor[0] + " " + profesor[1] + " " + profesor[2];
-            String[] necesidad = necesidades.getOrDefault(nombreCompleto, null);
+            nombresCapacitacion.add(nombreCompleto.trim());
+        }
 
-            Row row = sheetNuevo.createRow(rowIndex++);
-            row.createCell(0).setCellValue(nombreCompleto);
+        // Llenar datos en el nuevo archivo
+        int rowIndex = 2; // Iniciar en la tercera fila
+        for (Map.Entry<String, String[]> entry : necesidades.entrySet()) {
+            String nombre = entry.getKey().trim(); // Nombre completo del docente
+            String[] necesidad = entry.getValue(); // Necesidades FD y AP
 
-            // Determinar valores para FP y AD
-            if (necesidad != null) {
-                // Si aparece en la lista de necesidades
-                row.createCell(1).setCellValue("Recomendable");
-                row.createCell(2).setCellValue("Recomendable");
-            } else {
-                // Si no aparece, asignar aleatoriamente "Recomendable"
-                row.createCell(1).setCellValue(random.nextBoolean() ? "Recomendable" : "");
-                row.createCell(2).setCellValue(random.nextBoolean() ? "Recomendable" : "");
+            // Verificar si el nombre no está en programa_de_capacitacion(1)
+            if (!nombresCapacitacion.contains(nombre)) {
+                Row row = sheetNuevo.createRow(rowIndex++);
+
+                // Escribir datos en las celdas
+                row.createCell(0).setCellValue(nombre);     // Nombre
+                row.createCell(1).setCellValue(necesidad[0]); // FD 
+                row.createCell(2).setCellValue(necesidad[1]); // AP 
             }
         }
 

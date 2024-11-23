@@ -197,13 +197,13 @@ public class PrincipalController implements Initializable {
     public static class Docente {
 
         String nombre;
-        boolean necesitaCapacitacionFP;
-        boolean necesitaCapacitacionAD;
+        boolean necesitaCapacitacionFD;
+        boolean necesitaCapacitacionAP;
 
         public Docente(String nombre, boolean necesitaFP, boolean necesitaAD) {
             this.nombre = nombre;
-            this.necesitaCapacitacionFP = necesitaFP;
-            this.necesitaCapacitacionAD = necesitaAD;
+            this.necesitaCapacitacionFD = necesitaFP;
+            this.necesitaCapacitacionAP = necesitaAD;
         }
 
     }
@@ -268,7 +268,7 @@ public class PrincipalController implements Initializable {
         // Crear una entrada de notificación para cada docente
         for (Docente docente : docentesN) {
             // **Condición para ignorar docentes sin "Recomendable" en FP o AD**
-            if (!docente.necesitaCapacitacionFP && !docente.necesitaCapacitacionAD) {
+            if (!docente.necesitaCapacitacionFD && !docente.necesitaCapacitacionAP) {
                 continue; // Saltar este docente
             }
 
@@ -283,12 +283,12 @@ public class PrincipalController implements Initializable {
 
             // Crear y añadir un Label para las necesidades de capacitación
             String necesidades = "Necesita capacitación en: ";
-            if (docente.necesitaCapacitacionFP && docente.necesitaCapacitacionAD) {
-                necesidades += "FP y AD";
-            } else if (docente.necesitaCapacitacionFP) {
-                necesidades += "FP";
-            } else if (docente.necesitaCapacitacionAD) {
-                necesidades += "AD";
+            if (docente.necesitaCapacitacionFD && docente.necesitaCapacitacionAP) {
+                necesidades += "FD y AP";
+            } else if (docente.necesitaCapacitacionFD) {
+                necesidades += "FD";
+            } else if (docente.necesitaCapacitacionAP) {
+                necesidades += "AP";
             }
 
             Label capacitacionLabel = new Label(necesidades);
