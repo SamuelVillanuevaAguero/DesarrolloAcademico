@@ -481,18 +481,18 @@ private void buscarPorEnter(KeyEvent event) {
             int rowIndex = 1; // Empezar en la segunda fila
             for (Evento evento : tableView.getItems()) {
                 Row row = sheet.createRow(rowIndex++);
-                row.createCell(2).setCellValue(evento.getApellidoPaterno());
-                row.createCell(3).setCellValue(evento.getApellidoMaterno());
-                row.createCell(4).setCellValue(evento.getNombres());
-                row.createCell(5).setCellValue(evento.getRfc());
-                row.createCell(6).setCellValue(evento.getSexo());
-                row.createCell(7).setCellValue(evento.getDepartamento());
-                row.createCell(8).setCellValue(evento.getPuesto());
-                row.createCell(9).setCellValue(evento.getNombreEvento());
-                row.createCell(10).setCellValue(evento.getCapacitacion());
-                row.createCell(11).setCellValue(evento.getNombreFacilitador());
-                row.createCell(12).setCellValue(evento.getPeriodo());
-                row.createCell(13).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
+                row.createCell(0).setCellValue(evento.getApellidoPaterno());
+                row.createCell(1).setCellValue(evento.getApellidoMaterno());
+                row.createCell(2).setCellValue(evento.getNombres());
+                row.createCell(3).setCellValue(evento.getRfc());
+                row.createCell(4).setCellValue(evento.getSexo());
+                row.createCell(5).setCellValue(evento.getDepartamento());
+                row.createCell(6).setCellValue(evento.getPuesto());
+                row.createCell(7).setCellValue(evento.getNombreEvento());
+                row.createCell(8).setCellValue(evento.getCapacitacion());
+                row.createCell(9).setCellValue(evento.getNombreFacilitador());
+                row.createCell(10).setCellValue(evento.getPeriodo());
+                row.createCell(11).setCellValue(evento.isAcreditado() ? "Sí acreditó" : "No acreditó");
             }
 
             // Autoajustar el ancho de las columnas
