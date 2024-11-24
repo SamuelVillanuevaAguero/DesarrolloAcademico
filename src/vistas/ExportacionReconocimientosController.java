@@ -221,11 +221,20 @@ public class ExportacionReconocimientosController implements Initializable {
         // Generar reconocimientos para cada docente
         for (String nombreDocente : nombresDocentesAcreditados) {
             try {
-                // Generar el documento Word
-                String archivoWordGenerado = generarDocumentoWord(rutaPlantilla, directorioSalida, nombreDocente, horasCurso);
-
-                // Incrementar el contador de exportados
+                if (formatoSeleccionado.equals("PDF")) {
+                // Generar PDF
+              
                 totalExportados++;
+            } else if (formatoSeleccionado.equals("Word")) {
+                // Generar documento Word
+                String archivoWordGenerado = generarDocumentoWord(rutaPlantilla, directorioSalida, nombreDocente, horasCurso);
+                totalExportados++;
+            } else if (formatoSeleccionado.equals("Ambos")) {
+                // Generar tanto PDF como Word
+
+                String archivoWordGenerado = generarDocumentoWord(rutaPlantilla, directorioSalida, nombreDocente, horasCurso);
+                totalExportados++;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 Alert error = new Alert(Alert.AlertType.ERROR, "Error al generar el reconocimiento para " + nombreDocente + ": " + e.getMessage());
@@ -355,7 +364,7 @@ public class ExportacionReconocimientosController implements Initializable {
         }
     }
 
-// Procesa todos los párrafos en un documento
+    // Procesa todos los párrafos en un documento
     private void procesarParrafos(XWPFDocument documento, String nombreDocente, String horasCurso) {
         // Obtén los valores adicionales de los TextFields y TextAreas
         String codigoCurso = txtcodigodelcurso.getText();
@@ -368,47 +377,62 @@ public class ExportacionReconocimientosController implements Initializable {
     }
 
     private void reemplazarMarcadores(XWPFParagraph parrafo, String nombreDocente, String horasCurso, String codigoCurso, String nombreCurso, String fechaCurso) {
-        // Obtiene el texto completo del párrafo
+   // Convierte todos los valores a mayúsculas
+    nombreDocente = nombreDocente.toUpperCase();
+    horasCurso = horasCurso.toUpperCase();
+    codigoCurso = codigoCurso.toUpperCase();
+    nombreCurso = nombreCurso.toUpperCase();
+    fechaCurso = fechaCurso.toUpperCase();
+    
+    // Agrega "REALIZADO " antes de la fecha y luego la convierte en mayúsculas
+    fechaCurso = ("REALIZADO " + fechaCurso).toUpperCase();
+    horasCurso = ("CON UNA DURACION DE  " + horasCurso).toUpperCase()+" HORAS";
+
+    // Obtiene el texto completo del párrafo
     String textoCompleto = parrafo.getText();
 
-    // Verifica si el texto contiene algún marcador
-    if (textoCompleto.contains("{nombreDocente}")
-            || textoCompleto.contains("{horasCurso}")
-            || textoCompleto.contains("{codigo del curso}")
-            || textoCompleto.contains("{NombreCurso}")
-            || textoCompleto.contains("{fechaCurso}")) {
+    // Si contiene algún marcador, realiza el reemplazo
+    if (textoCompleto.contains("{nombreDocente}") || textoCompleto.contains("{horasCurso}") 
+            || textoCompleto.contains("{codigoCurso}") || textoCompleto.contains("{nombreCurso}") || textoCompleto.contains("{fechaCurso}")) {
 
-        // Elimina todos los runs del párrafo
+        // Elimina todos los *runs* existentes
         for (int i = parrafo.getRuns().size() - 1; i >= 0; i--) {
             parrafo.removeRun(i);
         }
 
-        // Crear Runs personalizados para cada marcador
-        if (textoCompleto.contains("{nombreDocente}") && nombreDocente != null && !nombreDocente.isEmpty()) {
-            crearRunConEstilo(parrafo, nombreDocente.toUpperCase(), "Montserrat Extra Bold", 24, "595959", true, false); // Nombre del docente
-        }
-        if (textoCompleto.contains("{horasCurso}") && horasCurso != null && !horasCurso.isEmpty()) {
-            crearRunConEstilo(parrafo, horasCurso.toUpperCase(), "Montserrat Extra Bold", 11, "595959", false, false); // Horas del curso
-        }
-        if (textoCompleto.contains("{codigo del curso}") && codigoCurso != null && !codigoCurso.isEmpty()) {
-            crearRunConEstilo(parrafo, codigoCurso.toUpperCase(), "Montserrat", 11, "595959", false, false); // Código del curso
-        }
-        if (textoCompleto.contains("{NombreCurso}") && nombreCurso != null && !nombreCurso.isEmpty()) {
-            crearRunConEstilo(parrafo, nombreCurso.toUpperCase(), "Montserrat", 18, "595959", true, false); // Nombre del curso
-        }
-        if (textoCompleto.contains("{fechaCurso}") && fechaCurso != null && !fechaCurso.isEmpty()) {
-            crearRunConEstilo(parrafo, fechaCurso.toUpperCase(), "Montserrat", 11, "595959", false, false); // Fecha del curso
-        }
+        // Realiza los reemplazos en el texto
+        textoCompleto = textoCompleto
+                .replace("{nombreDocente}", nombreDocente)
+                .replace("{horasCurso}", horasCurso)
+                .replace("{codigoCurso}", codigoCurso)
+                .replace("{nombreCurso}", nombreCurso)
+                .replace("{fechaCurso}", fechaCurso);
 
+        // Divide el texto en fragmentos
+        String[] fragmentos = textoCompleto.split("(?<=\\})|(?=\\{)");
 
-    
-
+        // Reconstruye el párrafo con estilo para cada fragmento
+        for (String fragmento : fragmentos) {
+            if (fragmento.equals(nombreDocente)) {
+                crearRunConEstilo(parrafo, fragmento, "Montserrat Extra Bold", 24, "595959", true, false);
+            } else if (fragmento.equals(horasCurso)) {
+                crearRunConEstilo(parrafo, fragmento, "Montserrat Extra Bold", 11, "595959", false, false);
+            } else if (fragmento.equals(codigoCurso)) {
+                crearRunConEstilo(parrafo, fragmento, "Montserrat", 11, "595959", false, false);
+            } else if (fragmento.equals(nombreCurso)) {
+                crearRunConEstilo(parrafo, fragmento, "Montserrat", 18, "595959", true, false);
+            } else if (fragmento.equals(fechaCurso)) {
+                crearRunConEstilo(parrafo, fragmento, "Montserrat", 11, "595959", false, false);
+            } else {
+                // Para texto normal, usa un estilo predeterminado
+                crearRunConEstilo(parrafo, fragmento, "Montserrat", 11, "595959", false, false);
+            }
         }
     }
+    }
 
-// Método para crear un Run con diseño específico
-    private void crearRunConEstilo(XWPFParagraph parrafo, String texto, String fuente, int tamanio,
-            String color, boolean negrita, boolean italica) {
+    // Método para crear un Run con diseño específico
+    private void crearRunConEstilo(XWPFParagraph parrafo, String texto, String fuente, int tamanio, String color, boolean negrita, boolean italica) {
         XWPFRun run = parrafo.createRun();
         run.setText(texto);
         run.setFontFamily(fuente);
@@ -417,7 +441,8 @@ public class ExportacionReconocimientosController implements Initializable {
         run.setBold(negrita);
         run.setItalic(italica);
     }
-
+    
+   
     class ExcelReader {
 
         private static final String ETIQUETAS_PATH = "D:/Documentos/Documentos a ocupar/Etiquetas_Cursos_2024.xlsx";
@@ -487,7 +512,7 @@ public class ExportacionReconocimientosController implements Initializable {
         public Map<String, String> buscarDetallesCurso(String nombreCurso) throws IOException {
             Map<String, String> datosCurso = new HashMap<>();
 
-            try (FileInputStream file = new FileInputStream("C:/Users/ascen/OneDrive/Documentos/Documentos a ocupar/PROG-INSTITUCIONAL-ENERO-2023.xlsx")) {
+            try (FileInputStream file = new FileInputStream("D:/Documentos/Documentos a ocupar/PROG-INSTITUCIONAL-ENERO-2023.xlsx")) {
                 Workbook workbook = new XSSFWorkbook(file);
                 Sheet sheet = workbook.getSheetAt(0);
 
